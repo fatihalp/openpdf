@@ -84,8 +84,14 @@ Admin olusturma:
 php artisan db:seed --class=AdminUserSeeder
 ```
 
+Varsayilan admin:
+
+- Email: `a@a.com`
+- Password: `236330`
+
 `.env` degiskenleri:
 
+- `ADMIN_NAME`
 - `ADMIN_EMAIL`
 - `ADMIN_PASSWORD`
 
@@ -142,6 +148,10 @@ GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
 ```
 
 Frontend Google Identity tokenini backend'e yollar, backend `tokeninfo` ile dogrular ve kullaniciyi oturum acmis hale getirir.
+
+Filament admin paneli icinde Google login yardim sayfasi:
+
+- `/admin/google-login-help`
 
 ## Backend Donusum Adaptorlari
 

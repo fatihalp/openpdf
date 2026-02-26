@@ -13,24 +13,11 @@
     <link rel="stylesheet" href="{{ asset('css/openpdf.css') }}">
 </head>
 <body class="site-map-body">
-<header class="site-header sticky-top">
-    <nav class="navbar py-2">
-        <div class="container">
-            <a class="brand" href="{{ $homeUrl }}">
-                <span class="logo-mark">OP</span>
-                <span class="brand-copy">
-                    <strong>OpenPDF</strong>
-                    <small>{{ $domain }}</small>
-                </span>
-            </a>
-            <a class="btn btn-outline-dark btn-sm" href="{{ $homeUrl }}">{{ __('openpdf.footer.home', [], $locale) }}</a>
-        </div>
-    </nav>
-</header>
+@include('partials.public-header', ['headerMenu' => $headerMenu])
 
-<main class="section-block">
+<main class="py-4">
     <div class="container">
-        <div class="seo-copy mb-4">
+        <div class="bg-white border rounded-4 p-4 mb-4">
             <h1>{{ $title }}</h1>
             <p>{{ $description }}</p>
             <p><a href="{{ $siteMapXmlUrl }}">sitemap.xml</a></p>
@@ -38,26 +25,26 @@
 
         <div class="row g-4">
             <div class="col-lg-8">
-                <div class="sitemap-card">
+                <div class="bg-white border rounded-4 p-4 h-100">
                     <h2>{{ __('openpdf.sitemap.tools_heading', [], $locale) }}</h2>
-                    <ul class="sitemap-list">
+                    <ul class="list-group list-group-flush">
                         @foreach ($tools as $tool)
-                            <li>
+                            <li class="list-group-item px-0">
                                 <a href="{{ $tool['url'] }}">{{ $tool['title'] }}</a>
-                                <span>{{ $tool['description'] }}</span>
+                                <div class="text-muted small">{{ $tool['description'] }}</div>
                             </li>
                         @endforeach
                     </ul>
                 </div>
             </div>
             <div class="col-lg-4">
-                <div class="sitemap-card">
+                <div class="bg-white border rounded-4 p-4 h-100">
                     <h2>{{ __('openpdf.sitemap.languages_heading', [], $locale) }}</h2>
-                    <ul class="sitemap-list">
+                    <ul class="list-group list-group-flush">
                         @foreach ($localeLinks as $item)
-                            <li>
+                            <li class="list-group-item px-0">
                                 <a href="{{ $item['url'] }}">{{ $item['label'] }}</a>
-                                <span>{{ $item['locale'] }}</span>
+                                <div class="text-muted small">{{ $item['code'] }}</div>
                             </li>
                         @endforeach
                     </ul>
@@ -67,20 +54,19 @@
     </div>
 </main>
 
-<footer class="site-footer">
-    <div class="container">
-        <div class="footer-grid">
-            <div>
-                <p class="footer-brand">OpenPDF</p>
-                <p>{{ __('openpdf.footer.about', [], $locale) }}</p>
-            </div>
-            <div class="footer-links">
-                <a href="{{ $homeUrl }}">{{ __('openpdf.footer.home', [], $locale) }}</a>
-                <a href="{{ $canonicalUrl }}">{{ __('openpdf.footer.site_map', [], $locale) }}</a>
-                <a href="{{ $siteMapXmlUrl }}">{{ __('openpdf.footer.sitemap_xml', [], $locale) }}</a>
-            </div>
+@include('partials.floating-controls', ['locale' => $locale, 'localeLinks' => $localeLinks])
+
+<footer class="py-4 border-top">
+    <div class="container d-flex flex-wrap gap-3 align-items-center justify-content-between">
+        <div>{{ __('openpdf.footer.about', [], $locale) }}</div>
+        <div class="d-flex gap-3">
+            <a href="{{ $homeUrl }}">{{ __('openpdf.footer.home', [], $locale) }}</a>
+            <a href="{{ $canonicalUrl }}">{{ __('openpdf.footer.site_map', [], $locale) }}</a>
+            <a href="{{ $siteMapXmlUrl }}">{{ __('openpdf.footer.sitemap_xml', [], $locale) }}</a>
         </div>
     </div>
 </footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="{{ asset('js/theme-switcher.js') }}"></script>
 </body>
 </html>

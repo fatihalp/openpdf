@@ -132,4 +132,34 @@ class ToolCatalog
 
         return $localized;
     }
+
+    public static function headerMenu(string $locale): array
+    {
+        $tools = self::localized($locale);
+        $toolMap = collect($tools)->keyBy('key');
+
+        $convertKeys = [
+            'pdf_to_word',
+            'pdf_to_excel',
+            'pdf_to_jpg',
+            'word_to_pdf',
+            'excel_to_pdf',
+            'jpg_to_pdf',
+        ];
+
+        return [
+            'merge_url' => self::toolUrl($locale, 'merge_pdf'),
+            'split_url' => self::toolUrl($locale, 'split_pdf'),
+            'compress_url' => self::toolUrl($locale, 'compress_pdf'),
+            'all_tools_url' => self::siteMapUrl($locale),
+            'convert_menu' => collect($convertKeys)
+                ->map(fn (string $key) => $toolMap->get($key))
+                ->filter()
+                ->values()
+                ->all(),
+            'all_tools_menu' => $tools,
+            'login_url' => '/admin/login',
+            'signup_url' => '/admin/login',
+        ];
+    }
 }

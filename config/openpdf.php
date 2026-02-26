@@ -127,6 +127,11 @@ return [
             'accept_extensions' => ['pdf'],
             'accept_mime' => ['application/pdf'],
         ],
+        'split_pdf' => [
+            'mode' => 'browser_first',
+            'accept_extensions' => ['pdf'],
+            'accept_mime' => ['application/pdf'],
+        ],
         'word_to_pdf' => [
             'mode' => 'backend',
             'accept_extensions' => ['doc', 'docx', 'odt'],

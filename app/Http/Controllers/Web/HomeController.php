@@ -5,38 +5,32 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Support\ToolCatalog;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class HomeController extends Controller
 {
-    public function __invoke(Request $request)
+    public function __invoke(Request $request): View
     {
         $locale = app()->getLocale();
-        $user = $request->user();
+        $tools = ToolCatalog::localized($locale);
+        $localeLinks = collect(ToolCatalog::locales())
+            ->map(fn (string $code): array => [
+                'code' => $code,
+                'label' => trans("openpdf.locales.$code", [], $locale),
+                'url' => url('/?lang='.$code),
+            ])
+            ->values()
+            ->all();
 
-        $config = [
-            'domain' => config('openpdf.domain'),
+        return view('landing', [
             'locale' => $locale,
-            'i18n' => trans('openpdf'),
-            'locales' => collect(ToolCatalog::locales())
-                ->map(fn (string $code) => [
-                    'code' => $code,
-                    'label' => trans("openpdf.locales.$code"),
-                ])
-                ->values()
-                ->all(),
-            'limits' => ToolCatalog::visitorLimits(),
-            'googleClientId' => config('services.google.client_id'),
-            'tools' => ToolCatalog::localized($locale),
-            'auth' => [
-                'logged_in' => $user !== null,
-                'provider' => $user?->google_id ? 'google' : ($user ? 'local' : 'visitor'),
-                'name' => $user?->name,
-                'email' => $user?->email,
-            ],
-        ];
-
-        return view('home', [
-            'appConfigJson' => json_encode($config, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+            'domain' => config('openpdf.domain'),
+            'title' => trans('openpdf.meta.title', [], $locale),
+            'description' => trans('openpdf.meta.description', [], $locale),
+            'tools' => $tools,
+            'localeLinks' => $localeLinks,
+            'siteMapUrl' => ToolCatalog::siteMapUrl($locale),
+            'headerMenu' => ToolCatalog::headerMenu($locale),
         ]);
     }
 }

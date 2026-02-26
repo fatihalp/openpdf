@@ -12,7 +12,7 @@
             <ol class="mt-3 list-decimal space-y-2 pl-5 text-sm text-gray-700">
                 <li>Proje sec veya olustur.</li>
                 <li>
-                    <a class="text-primary-600 underline" href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener">
+                    <a class="text-primary-600 underline" href="https://console.cloud.google.com/apis/credentials">
                         APIs &amp; Services &gt; Credentials
                     </a>
                     sayfasina gir.
@@ -28,7 +28,7 @@
             <h3 class="text-base font-semibold text-gray-900">2. OAuth Consent Screen ayari (gerekirse)</h3>
             <ol class="mt-3 list-decimal space-y-2 pl-5 text-sm text-gray-700">
                 <li>
-                    <a class="text-primary-600 underline" href="https://console.cloud.google.com/apis/credentials/consent" target="_blank" rel="noopener">
+                    <a class="text-primary-600 underline" href="https://console.cloud.google.com/apis/credentials/consent">
                         OAuth consent screen
                     </a>
                     ekranini ac.

@@ -109,9 +109,13 @@
           );
         }
 
-        if (this.files.length <= 1) {
+        if (this.selectedTool?.key === "merge_pdf" && this.files.length <= 1) {
           const template = this.config.i18n?.workspace?.hint_add_more || "Please select more files by clicking again on the select button.";
           return template.replace(":type", this.primaryExtension);
+        }
+
+        if (this.files.length === 1) {
+          return this.config.i18n?.workspace?.hint_ready_to_convert || "File is ready. Click Convert to continue.";
         }
 
         return this.config.i18n?.workspace?.hint_sort || "To change the order, drag and drop the files as you want.";

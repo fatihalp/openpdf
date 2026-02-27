@@ -67,6 +67,7 @@ return [
         'add_more_files' => 'Add more files',
         'sort_files' => 'Sort files',
         'hint_add_more' => 'Please, select more :type files by clicking again on the select button.',
+        'hint_ready_to_convert' => 'File is ready. Click Convert to continue.',
         'hint_sort' => 'To change the order of your files, drag and drop the files as you want.',
         'split_action' => 'Split PDF',
         'split_mode_range' => 'Range',

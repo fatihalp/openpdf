@@ -4,6 +4,7 @@ namespace App\Services\Conversion;
 
 use App\Models\ConversionTask;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Symfony\Component\Process\Process;
@@ -122,17 +123,18 @@ class ConversionPipeline
             throw new \RuntimeException('Bu arac tek dosya ile calisir.');
         }
 
-        $this->assertBinary('libreoffice', 'LibreOffice headless kurulu olmali.');
-
-        $this->run([
-            'libreoffice',
+        $officeBinary = $this->officeBinary();
+        $command = [
+            $officeBinary,
             '--headless',
             '--convert-to',
             $targetExt,
             '--outdir',
             $workDir,
             $inputPaths[0],
-        ]);
+        ];
+
+        $process = $this->run($command, 'LibreOffice donusumu basarisiz.');
 
         $expected = pathinfo($inputPaths[0], PATHINFO_FILENAME).'.'.$targetExt;
         $output = $workDir.'/'.$expected;
@@ -143,7 +145,27 @@ class ConversionPipeline
         }
 
         if (! is_file($output)) {
-            throw new \RuntimeException('LibreOffice cikti uretmedi.');
+            $diagnostics = $this->commandOutput($process);
+
+            Log::warning('LibreOffice output missing after successful process', [
+                'binary' => $officeBinary,
+                'target_ext' => $targetExt,
+                'input' => basename($inputPaths[0]),
+                'command' => $this->commandToString($command),
+                'stdout' => trim($process->getOutput()),
+                'stderr' => trim($process->getErrorOutput()),
+            ]);
+
+            $message = 'LibreOffice cikti uretmedi.';
+
+            if ($diagnostics !== '') {
+                $message .= ' Detay: '.$diagnostics;
+            }
+
+            $message .= ' Olasi nedenler: PDF tarama/gorsel tabanli olabilir, dosya korumali olabilir veya LibreOffice PDF importu bu dosya icin DOCX/XLSX cikti olusturamamis olabilir.';
+            $message .= ' Komut: '.$this->commandToString($command);
+
+            throw new \RuntimeException($message);
         }
 
         $mime = match ($targetExt) {
@@ -189,15 +211,27 @@ class ConversionPipeline
         ];
     }
 
-    private function run(array $command): void
+    private function run(array $command, ?string $context = null): Process
     {
         $process = new Process($command);
         $process->setTimeout(900);
         $process->run();
 
         if (! $process->isSuccessful()) {
-            throw new \RuntimeException(trim($process->getErrorOutput() ?: $process->getOutput()) ?: 'Komut calistirilamadi.');
+            $message = ($context ? $context.' ' : '').'Komut basarisiz oldu.';
+            $message .= ' Exit code: '.($process->getExitCode() ?? 'n/a').'.';
+
+            $details = $this->commandOutput($process);
+            if ($details !== '') {
+                $message .= ' Detay: '.$details;
+            }
+
+            $message .= ' Komut: '.$this->commandToString($command);
+
+            throw new \RuntimeException($message);
         }
+
+        return $process;
     }
 
     private function assertBinary(string $binary, string $hint): void
@@ -205,6 +239,19 @@ class ConversionPipeline
         if (! $this->binaryExists($binary)) {
             throw new \RuntimeException($hint);
         }
+    }
+
+    private function officeBinary(): string
+    {
+        if ($this->binaryExists('libreoffice')) {
+            return 'libreoffice';
+        }
+
+        if ($this->binaryExists('soffice')) {
+            return 'soffice';
+        }
+
+        throw new \RuntimeException('LibreOffice headless kurulu olmali (libreoffice veya soffice).');
     }
 
     private function binaryExists(string $binary): bool
@@ -235,5 +282,29 @@ class ConversionPipeline
         }
 
         rmdir($path);
+    }
+
+    private function commandOutput(Process $process, int $limit = 800): string
+    {
+        $output = trim($process->getErrorOutput());
+
+        if ($output === '') {
+            $output = trim($process->getOutput());
+        }
+
+        if ($output === '') {
+            return '';
+        }
+
+        if (mb_strlen($output) <= $limit) {
+            return $output;
+        }
+
+        return mb_substr($output, 0, $limit).'...';
+    }
+
+    private function commandToString(array $command): string
+    {
+        return implode(' ', array_map(static fn ($part) => escapeshellarg((string) $part), $command));
     }
 }

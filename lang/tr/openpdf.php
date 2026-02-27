@@ -32,6 +32,7 @@ return array_replace_recursive(require base_path('lang/en/openpdf.php'), [
         'add_more_files' => 'Daha fazla dosya ekle',
         'sort_files' => 'Dosyaları sırala',
         'hint_add_more' => 'Lütfen tekrar seç butonuna tıklayarak daha fazla :type dosyası ekleyin.',
+        'hint_ready_to_convert' => 'Dosya hazır. Devam etmek için Dönüştür butonuna basın.',
         'hint_sort' => 'Dosya sırasını değiştirmek için dosyaları sürükleyip bırakın.',
         'split_action' => 'PDF Böl',
         'split_mode_range' => 'Aralık',

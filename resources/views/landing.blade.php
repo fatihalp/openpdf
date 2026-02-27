@@ -40,10 +40,16 @@
                         </span>
                         <h2>{{ $tool['title'] }}</h2>
                         <p>{{ $tool['description'] }}</p>
-                        <span class="op-tool-plus"><i class="bi bi-plus-lg"></i></span>
                     </a>
                 @endforeach
             </div>
+
+            <section class="op-home-donate">
+                <a class="op-home-donate-btn" href="https://github.com/sponsors/fatihalp">
+                    <i class="bi bi-heart-fill"></i>
+                    <span>Donate on GitHub Sponsors</span>
+                </a>
+            </section>
         </div>
     </main>
 

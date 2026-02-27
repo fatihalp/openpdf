@@ -1,108 +1,26 @@
-# openpdf.com.tr
+# OpenPDF (`openpdf.com.tr`)
 
-Kamusal fayda icin gelistirilen acik kaynak PDF donusum platformu.
+Laravel tabanli, cok dilli, acik kaynak PDF donusum platformu.
 
-## Teknoloji
+## Stack
 
-- Laravel `12.x`
+- PHP 8.2+
+- Laravel 12
 - PostgreSQL
-- Laravel Horizon (queue)
-- FilamentPHP `v5`
-- Bootstrap 5 (UI)
-- Vue.js 3 (frontend JS kutuphanesi)
+- Laravel Horizon (queue worker)
+- FilamentPHP v5 (admin panel)
+- Bootstrap 5 + Vue 3
 
-## Servisler
-
-- PDF to Word
-- PDF to Excel
-- PDF to JPG
-- Compress PDF
-- Merge PDF
-- Word to PDF
-- Excel to PDF
-- JPG to PDF
-
-## Yetkilendirme ve Limitler
-
-- Uyelik zorunlu degil.
-- Ziyaretci limiti: islem basina `100 dosya` ve `100 MB`
-- Google ile giris yapanlar: limitsiz (spam onleme icin)
-- Tum servisler ucretsiz.
-
-## Kamusal Taahhut
-
-- OpenPDF, Wikipedia benzeri topluluk modelinden ilham alan dernek tipi kamusal fayda girisimi olarak konumlanir.
-- Tum temel hizmetlerimizin her zaman ucretsiz kalacagi taahhut edilir.
-- Topluluk destegi sadece altyapi ve surdurulebilirlik icin kullanilir.
-
-## Bagis Kanallari
-
-- GitHub Sponsors
-- Patreon
-- Buy Me a Coffee
-
-`.env` bagis degiskenleri:
-
-- `OPENPDF_DONATE_GITHUB`
-- `OPENPDF_DONATE_PATREON`
-- `OPENPDF_DONATE_BMAC`
-- `OPENPDF_ORGANIZATION`
-- `OPENPDF_FREE_FOREVER`
-
-## Coklu Dil
-
-20 dil desteklenir:
-
-- en, zh, hi, es, fr, ar, bn, pt, ru, ur
-- id, de, ja, sw, mr, te, tr, ta, vi, ko
-
-Her arac icin SEO odakli aciklama metinleri `lang/*/openpdf.php` icinde bulunur.
-
-SEO URL yapisi:
-
-- `/{locale}/{tool-slug}/{locale-seo-suffix}`
-- Ornek:
-  - `/en/pdf-to-word/free-converter`
-  - `/tr/pdf-to-word/ucretsiz-cevirici`
-
-Site haritalari:
-
-- Dinamik XML: `/sitemap.xml`
-- Kullanici sayfasi: `/{locale}/{site-map-slug}`
-
-## Admin Panel
-
-- URL: `/admin`
-- Filament kaynaklari:
-  - Members (users)
-  - Conversion Tasks
-  - Uploaded Files
-
-Admin olusturma:
-
-```bash
-php artisan db:seed --class=AdminUserSeeder
-```
-
-Varsayilan admin:
-
-- Email: `a@a.com`
-- Password: `236330`
-
-`.env` degiskenleri:
-
-- `ADMIN_NAME`
-- `ADMIN_EMAIL`
-- `ADMIN_PASSWORD`
-
-## Kurulum
+## Hızlı Başlangıç
 
 ```bash
 cp .env.example .env
 php artisan key:generate
+composer install
+npm install
 ```
 
-PostgreSQL baglantisini `.env` icinde duzenleyin:
+`.env` PostgreSQL:
 
 ```env
 DB_CONNECTION=pgsql
@@ -113,68 +31,124 @@ DB_USERNAME=postgres
 DB_PASSWORD=postgres
 ```
 
-Migration ve seed:
+Kurulum:
 
 ```bash
 php artisan migrate
 php artisan db:seed
 ```
 
-Queue/Horizon:
-
-```bash
-php artisan horizon
-```
-
-Gelistirme sunucusu:
+Development:
 
 ```bash
 php artisan serve
+npm run dev
+php artisan horizon
 ```
 
-NPM ile frontend baslatma:
+## Çalışma Modeli
+
+### HTTP/UI
+- Public SEO route: `/{locale}/{tool-slug}/{seo-suffix}`
+- Public map route: `/{locale}/{site-map-slug}`
+- API: `/api/conversions`, `/api/auth/*`
+
+### Dönüşüm Akışı
+1. Frontend dosyayı alir, dogrular.
+2. Visitor limitleri frontend + backend tarafinda kontrol edilir.
+3. Islem tipine gore:
+   - Browser-first: client-side donusum, sonra sadece task logu API'ye yazilir (`source=browser`).
+   - Backend: API task olusturur, Horizon queue job isler, sonuc `storage`'a yazilir.
+4. Cikti indirme linki task uzerinden verilir.
+
+## Araç Matrisi (Client / Backend)
+
+| Tool key | UI label | Runtime | Engine |
+|---|---|---|---|
+| `split_pdf` | Split PDF | Client (browser-first) | `pdf-lib` + `pdf.js` + `jszip` |
+| `jpg_to_pdf` | JPG to PDF | Client (browser-first) | `jsPDF` |
+| `merge_pdf` | Merge PDF | Backend | `pdfunite` |
+| `compress_pdf` | Compress PDF | Backend | `gs` (Ghostscript) |
+| `pdf_to_jpg` | PDF to JPG | Backend | `pdftoppm` |
+| `pdf_to_word` | PDF to Word | Backend | `libreoffice --headless` (veya `soffice --headless`) |
+| `pdf_to_excel` | PDF to Excel | Backend | `libreoffice --headless` (veya `soffice --headless`) |
+| `word_to_pdf` | Word to PDF | Backend | `libreoffice --headless` (veya `soffice --headless`) |
+| `excel_to_pdf` | Excel to PDF | Backend | `libreoffice --headless` (veya `soffice --headless`) |
+
+Not:
+- `jpg_to_pdf` backend adaptoru pipeline'da mevcuttur (`img2pdf` veya `magick`), ancak mevcut public UI browser-first calisir.
+- `split_pdf` su an backend queue yerine browser'da calisir.
+
+## Backend Binary Gereksinimleri
+
+- `pdfunite`
+- `gs`
+- `pdftoppm`
+- `libreoffice` veya `soffice` (LibreOffice)
+- (opsiyonel) `img2pdf` veya `magick`
+
+Eksik binary varsa ilgili task `failed` olur ve hata mesaji `conversion_tasks.error_message` alanina yazilir.
+
+### LibreOffice headless kurulum
+
+macOS (Homebrew):
 
 ```bash
-npm install
-npm run dev
+brew install --cask libreoffice
+soffice --version
 ```
 
-## Google Login
+Ubuntu:
 
-`GOOGLE_CLIENT_ID` tanimlayin:
-
-```env
-GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
+```bash
+sudo apt update
+sudo apt install -y libreoffice
+libreoffice --version
 ```
 
-Frontend Google Identity tokenini backend'e yollar, backend `tokeninfo` ile dogrular ve kullaniciyi oturum acmis hale getirir.
+Not:
+- Bu proje macOS tarafinda `soffice` binary'sini da destekler.
+- CI/production Linux ortamlarda `libreoffice` binary adi yaygindir.
 
-Filament admin paneli icinde Google login yardim sayfasi:
+## Kimlik / Limit
 
-- `/admin/google-login-help`
+- Uyelik zorunlu degil.
+- Visitor limiti: `100` dosya, `100MB` (config: `openpdf.visitor_limits`).
+- Google login: limitsiz mod.
+- Google config: `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`.
+- Admin Google setup help: `/admin/google-login-help`
 
-## Backend Donusum Adaptorlari
+## Admin / Operasyon
 
-Asagidaki komut satiri araclari varsa backend donusumlari calisir:
+- Admin URL: `/admin`
+- Filament kaynaklari:
+  - Users
+  - ConversionTasks
+  - UploadedFiles
 
-- `pdfunite` (merge_pdf)
-- `gs` / Ghostscript (compress_pdf)
-- `pdftoppm` (pdf_to_jpg)
-- `libreoffice --headless` (word/pdf/excel donusumleri)
-- `img2pdf` veya `magick` (jpg_to_pdf backend fallback)
+Admin seed:
 
-Arac yoksa ilgili islem `failed` durumuna gecer ve hata mesaji task kaydina yazilir.
+```bash
+php artisan db:seed --class=AdminUserSeeder
+```
 
-## Dizinler
+Varsayilan:
+- email: `a@a.com`
+- password: `236330`
 
-- Frontend view: `resources/views/tool.blade.php`
-- Site map page: `resources/views/site-map.blade.php`
-- Sitemap XML template: `resources/views/sitemap-xml.blade.php`
-- Frontend JS: `public/js/openpdf-app.js`
-- Frontend CSS: `public/css/openpdf.css`
-- SEO routing controller: `app/Http/Controllers/Web/ToolPageController.php`
-- Sitemap XML controller: `app/Http/Controllers/Web/SitemapXmlController.php`
-- API: `app/Http/Controllers/Api`
-- Conversion queue job: `app/Jobs/ProcessConversionTaskJob.php`
-- Conversion pipeline: `app/Services/Conversion/ConversionPipeline.php`
-- Filament resources: `app/Filament/Resources`
+## Önemli Dosyalar
+
+- Tool config: `config/openpdf.php`
+- Tool catalog/URL mapping: `app/Support/ToolCatalog.php`
+- Public tool page: `resources/views/tool.blade.php`
+- Frontend app: `public/js/openpdf-app.js`
+- Frontend style: `public/css/openpdf.css`
+- Conversion API: `app/Http/Controllers/Api/ConversionController.php`
+- Queue job: `app/Jobs/ProcessConversionTaskJob.php`
+- Pipeline: `app/Services/Conversion/ConversionPipeline.php`
+
+## Dil / SEO
+
+- 20 locale desteklenir (`config/openpdf.php` -> `locales`).
+- Locale bazli SEO suffix: `config/openpdf.php` -> `route_slugs`.
+- Dinamik sitemap XML: `/sitemap.xml`

@@ -31,14 +31,6 @@
                     <button type="button" class="op-select-button" @click="triggerFileSelect">
                         @{{ selectButtonLabel }}
                     </button>
-                    <div class="op-cloud-actions">
-                        <button type="button" class="op-cloud-btn" aria-label="Google Drive" @click="triggerFileSelect">
-                            <i class="bi bi-google"></i>
-                        </button>
-                        <button type="button" class="op-cloud-btn" aria-label="Dropbox" @click="triggerFileSelect">
-                            <i class="bi bi-dropbox"></i>
-                        </button>
-                    </div>
                     <p class="op-upload-help">@{{ dropSubtitleLabel }}</p>
                     <p v-if="feedbackMessage" class="op-feedback" :class="`is-${feedbackType}`">@{{ feedbackMessage }}</p>
                 </div>

@@ -9,7 +9,8 @@
 
   const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
   const stored = window.localStorage.getItem(STORAGE_KEY);
-  const initial = stored || (prefersDark ? "dark" : "light");
+  const defaultTheme = root.classList.contains(DARK_CLASS) || prefersDark ? "dark" : "light";
+  const initial = stored || defaultTheme;
 
   applyTheme(initial);
 

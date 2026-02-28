@@ -39,9 +39,19 @@ body.theme-dark {
 html,
 body {
   margin: 0;
+  min-height: 100%;
   background: var(--op-bg);
   color: var(--op-text);
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+}
+
+body {
+  min-height: 100vh;
+}
+
+body.openpdf-home.theme-dark,
+body.openpdf-tool.theme-dark {
+  background: #000;
 }
 
 a {
@@ -79,8 +89,13 @@ a {
 
 .op-brand-logo {
   display: block;
-  width: 170px;
-  height: 36px;
+  width: 188px;
+  height: 40px;
+  color: #111214;
+}
+
+body.theme-dark .op-brand-logo {
+  color: #f5f5f7;
 }
 
 .op-nav-link,
@@ -104,6 +119,12 @@ a {
   background: var(--op-hover-bg);
 }
 
+.op-nav-link-tools {
+  border: 1px solid var(--op-line);
+  padding-inline: 0.68rem;
+  font-weight: 600;
+}
+
 .op-nav-link.active {
   color: var(--op-blue);
   font-weight: 700;
@@ -112,10 +133,18 @@ a {
 .op-main-nav {
   display: flex;
   align-items: center;
-  gap: 0.18rem;
-  overflow: visible;
-  flex: 1;
+  gap: 0.2rem;
+  overflow-x: auto;
+  flex: 1 1 auto;
   justify-content: center;
+  min-width: 0;
+  white-space: nowrap;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.op-main-nav::-webkit-scrollbar {
+  display: none;
 }
 
 .op-nav-dropdown i {
@@ -143,6 +172,7 @@ a {
   display: flex;
   align-items: center;
   gap: 0.35rem;
+  flex-shrink: 0;
 }
 
 .op-login-link {
@@ -175,6 +205,7 @@ a {
 
 .op-home-main {
   padding: 0.9rem 0 1.2rem;
+  min-height: calc(100vh - 74px);
 }
 
 .op-home-slogan {
@@ -1149,13 +1180,13 @@ body.theme-dark .list-group-item {
 
   .op-main-nav {
     justify-content: flex-start;
-    flex-wrap: wrap;
-    row-gap: 0.25rem;
+    flex-wrap: nowrap;
+    padding-bottom: 0.1rem;
   }
 
   .op-apple-header {
-    flex-wrap: wrap;
-    row-gap: 0.45rem;
+    flex-wrap: nowrap;
+    row-gap: 0;
   }
 
   .op-work-layout {
@@ -1182,27 +1213,36 @@ body.theme-dark .list-group-item {
 
 @media (max-width: 768px) {
   .op-brand-logo {
-    width: 146px;
-    height: 31px;
+    width: 170px;
+    height: 36px;
   }
 
   .op-apple-header {
-    flex-direction: column;
-    align-items: stretch;
+    flex-wrap: wrap;
+    align-items: center;
+    row-gap: 0.35rem;
   }
 
   .op-auth-actions {
+    margin-left: auto;
     justify-content: flex-end;
   }
 
   .op-main-nav {
+    order: 3;
+    width: 100%;
     justify-content: flex-start;
+    padding-bottom: 0.15rem;
   }
 
   .op-nav-link,
   .op-nav-dropdown {
-    padding: 0.45rem 0.65rem;
-    font-size: 0.9rem;
+    padding: 0.44rem 0.62rem;
+    font-size: 0.86rem;
+  }
+
+  .op-home-main {
+    min-height: calc(100vh - 116px);
   }
 
   .op-converter {

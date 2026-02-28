@@ -9,7 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/openpdf.css') }}">
 </head>
-<body class="openpdf-home">
+<body class="openpdf-home theme-dark">
     @include('partials.public-header', ['headerMenu' => $headerMenu])
 
     <main class="op-home-main">

@@ -15,7 +15,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/openpdf.css') }}">
 </head>
-<body class="openpdf-tool">
+<body class="openpdf-tool theme-dark">
 <div id="openpdf-app" v-cloak>
     @include('partials.public-header', ['headerMenu' => $headerMenu, 'activeToolKey' => $activeToolKey])
 

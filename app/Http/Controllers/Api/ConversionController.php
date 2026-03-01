@@ -7,44 +7,82 @@ use App\Jobs\ProcessConversionTaskJob;
 use App\Models\ConversionTask;
 use App\Models\UploadedFile;
 use App\Support\ToolCatalog;
+use Dedoc\Scramble\Attributes\BodyParameter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class ConversionController extends Controller
 {
+    #[BodyParameter(
+        'tool_key',
+        'Conversion tool identifier.',
+        required: true,
+        example: 'pdf_to_word'
+    )]
+    #[BodyParameter(
+        'source',
+        'Conversion execution source. Must always be backend.',
+        required: true,
+        example: 'backend'
+    )]
+    #[BodyParameter(
+        'options',
+        'Optional tool settings. JPG to PDF accepts orientation, pageSize, margin, singleFile. Split PDF accepts split.mode, split.merge_into_one, and split.pages.',
+        required: false,
+        example: [
+            'orientation' => 'portrait',
+            'pageSize' => 'a4',
+            'margin' => 0,
+            'singleFile' => true,
+            'split' => [
+                'mode' => 'selected',
+                'merge_into_one' => false,
+                'pages' => [1, 2, 3],
+            ],
+        ]
+    )]
     public function store(Request $request): JsonResponse
     {
+        $request->merge([
+            'source' => (string) $request->input('source', 'backend'),
+        ]);
+
         $validated = $request->validate([
-            'tool_key' => ['required', 'string'],
+            'tool_key' => ['required', 'string', Rule::in(array_keys(ToolCatalog::all()))],
+            'source' => ['required', 'string', Rule::in(['backend'])],
             'files' => ['required', 'array', 'min:1'],
             'files.*.name' => ['required', 'string', 'max:255'],
             'files.*.type' => ['nullable', 'string', 'max:120'],
             'files.*.size' => ['required', 'integer', 'min:1'],
-            'files.*.data' => ['nullable', 'string'],
-            'files.*.rotation' => ['nullable', 'integer'],
-            'options' => ['nullable', 'array'],
-            'source' => ['nullable', 'string'],
-            'output' => ['nullable', 'array'],
+            'files.*.data' => ['nullable', 'string', 'required_if:source,backend'],
+            'files.*.rotation' => ['nullable', 'integer', Rule::in([0, 90, 180, 270])],
+            'options' => ['nullable', 'array:orientation,pageSize,margin,singleFile,split'],
+            'options.orientation' => ['sometimes', 'string', Rule::in(['portrait', 'landscape'])],
+            'options.pageSize' => ['sometimes', 'string', Rule::in(['a4', 'letter', 'a3', 'fit'])],
+            'options.margin' => ['sometimes', 'integer', Rule::in([0, 8, 16, 24])],
+            'options.singleFile' => ['sometimes', 'boolean'],
+            'options.split' => ['sometimes', 'array:mode,merge_into_one,pages'],
+            'options.split.mode' => ['sometimes', 'string', Rule::in(['all', 'selected'])],
+            'options.split.merge_into_one' => ['sometimes', 'boolean'],
+            'options.split.pages' => ['sometimes', 'array'],
+            'options.split.pages.*' => ['integer', 'min:1'],
+            'output' => ['nullable', 'array:name,mime,size'],
+            'output.name' => ['nullable', 'string', 'max:255', 'required_if:source,browser'],
+            'output.mime' => ['nullable', 'string', 'max:120'],
+            'output.size' => ['nullable', 'integer', 'min:0'],
         ]);
 
         $toolKey = $validated['tool_key'];
-
-        if (! ToolCatalog::isValid($toolKey)) {
-            return response()->json([
-                'ok' => false,
-                'message' => 'Invalid conversion tool selected.',
-            ], 422);
-        }
-
         $files = $validated['files'];
         $totalBytes = array_sum(array_map(static fn (array $file): int => (int) $file['size'], $files));
         $this->enforceVisitorLimits($request, count($files), $totalBytes);
         $this->validateFileTypes($toolKey, $files);
 
         $visitorToken = $this->visitorToken($request);
-        $source = (string) ($validated['source'] ?? 'backend');
+        $source = $validated['source'];
 
         $task = ConversionTask::create([
             'user_id' => $request->user()?->id,
@@ -65,14 +103,7 @@ class ConversionController extends Controller
             $disk = $source === 'browser' ? 'browser' : 'local';
 
             if ($source !== 'browser') {
-                if (! isset($file['data']) || ! is_string($file['data']) || $file['data'] === '') {
-                    return response()->json([
-                        'ok' => false,
-                        'message' => 'File content is required for backend conversion.',
-                    ], 422);
-                }
-
-                $raw = $this->decodeBase64($file['data']);
+                $raw = $this->decodeBase64((string) $file['data']);
                 $safeName = preg_replace('/[^a-zA-Z0-9._-]/', '_', $file['name']) ?: ('file_'.$index);
                 $path = sprintf('conversions/uploads/%d/%s_%s', $task->id, Str::random(10), $safeName);
                 Storage::disk('local')->put($path, $raw);

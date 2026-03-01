@@ -614,6 +614,10 @@
         return pdf;
       },
       async logBrowserTask(outputName, outputSize, optionOverrides = null, outputMime = "application/pdf") {
+        if (this.selectedTool?.key === "split_pdf" || this.selectedTool?.key === "jpg_to_pdf") {
+          return;
+        }
+
         const options = optionOverrides ? { ...this.options, ...optionOverrides } : this.options;
 
         await window.axios.post("/api/conversions", {

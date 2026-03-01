@@ -101,7 +101,6 @@
         }
 
 
-        /* Main tests card */
         .sc-tests {
             margin-bottom: 0;
         }
@@ -140,7 +139,6 @@
             flex-wrap: wrap;
         }
 
-        /* Progress */
         .sc-progress-wrap {
             padding: 12px 20px 8px;
             border-bottom: 1px solid #f3f4f6;
@@ -204,7 +202,6 @@
             background: #ef4444;
         }
 
-        /* Table */
         .sc-table-head {
             display: grid;
             grid-template-columns: 160px 52px 1fr 1fr 130px;
@@ -408,11 +405,70 @@
             height: 14px;
             flex-shrink: 0;
         }
+
+        .sc-guide {
+            margin-bottom: 16px;
+        }
+
+        .sc-guide-body {
+            padding: 14px 20px 20px;
+            display: grid;
+            gap: 14px;
+        }
+
+        .sc-guide-step {
+            display: grid;
+            gap: 8px;
+        }
+
+        .sc-guide-step-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .sc-guide-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .sc-guide-desc {
+            font-size: 11px;
+            color: #6b7280;
+        }
+
+        .sc-code {
+            margin: 0;
+            padding: 12px 14px;
+            border-radius: 10px;
+            background: #0f172a;
+            color: #e2e8f0;
+            font-size: 12px;
+            line-height: 1.55;
+            border: 1px solid #1e293b;
+            overflow-x: auto;
+        }
+
+        .sc-copy-btn {
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            color: #111827;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 8px;
+            cursor: pointer;
+        }
+
+        .sc-copy-btn:hover {
+            background: #e5e7eb;
+        }
     </style>
 
     <div class="sc-wrap">
-
-        {{-- Top row: Binary + Env --}}
         <div class="sc-grid2">
             <div class="sc-card">
                 <div class="sc-card-head">
@@ -455,8 +511,29 @@
                 </div>
             </div>
         </div>
+        <div class="sc-card sc-guide">
+            <div class="sc-card-head">
+                <h3>Ubuntu 24.04 Install Commands</h3>
+            </div>
+            <div class="sc-guide-body">
+                @foreach($this->getUbuntu24InstallGuide() as $step)
+                <div class="sc-guide-step" x-data="{ command: @js($step['command']) }">
+                    <div class="sc-guide-step-head">
+                        <div>
+                            <div class="sc-guide-title">{{ $step['title'] }}</div>
+                            <div class="sc-guide-desc">{{ $step['description'] }}</div>
+                        </div>
+                        <button type="button" class="sc-copy-btn"
+                            x-on:click="navigator.clipboard.writeText(command)">
+                            Copy
+                        </button>
+                    </div>
+                    <pre class="sc-code">{{ $step['command'] }}</pre>
+                </div>
+                @endforeach
+            </div>
+        </div>
 
-        {{-- Tool Tests --}}
         @php
         $tools = [
         'compress_pdf' => 'Compress PDF',
@@ -473,41 +550,37 @@
         @endphp
 
         <div class="sc-card sc-tests">
-
-            {{-- Header --}}
             <div class="sc-tests-head">
                 <div class="sc-tests-head-left">
                     <h2>Tool Functional Tests</h2>
                     @if($summary['total'] > 0)
                     <div class="sc-badges">
                         @if($summary['passed'] > 0)
-                        <span class="sc-badge sc-badge-ok">✓ {{ $summary['passed'] }} başarılı</span>
+                        <span class="sc-badge sc-badge-ok">✓ {{ $summary['passed'] }} passed</span>
                         @endif
                         @if($summary['failed'] > 0)
-                        <span class="sc-badge sc-badge-err">✗ {{ $summary['failed'] }} hata</span>
+                        <span class="sc-badge sc-badge-err">✗ {{ $summary['failed'] }} failed</span>
                         @endif
                         @if(count($tools) - $summary['total'] > 0)
-                        <span class="sc-badge sc-badge-gray">– {{ count($tools) - $summary['total'] }} bekliyor</span>
+                        <span class="sc-badge sc-badge-gray">– {{ count($tools) - $summary['total'] }} pending</span>
                         @endif
                     </div>
                     @endif
                 </div>
                 <x-filament::button wire:click="runAllTests" wire:loading.attr="disabled" wire:target="runAllTests"
                     size="sm" color="primary" icon="heroicon-m-play-circle">
-                    <span wire:loading.remove wire:target="runAllTests">Tümünü Test Et</span>
-                    <span wire:loading wire:target="runAllTests">Çalışıyor...</span>
+                    <span wire:loading.remove wire:target="runAllTests">Run All Tests</span>
+                    <span wire:loading wire:target="runAllTests">Running...</span>
                 </x-filament::button>
             </div>
-
-            {{-- Progress bar (after run all) --}}
             @if($summary['total'] > 0)
             <div class="sc-progress-wrap">
                 <div class="sc-progress-meta">
-                    <span class="sc-progress-label">Test Raporu</span>
+                    <span class="sc-progress-label">Test Report</span>
                     <div class="sc-progress-counts">
-                        <span class="sc-count-ok">✓ {{ $summary['passed'] }} başarılı</span>
-                        <span class="sc-count-err">✗ {{ $summary['failed'] }} hata</span>
-                        <span class="sc-count-pend">– {{ count($tools) - $summary['total'] }} bekliyor</span>
+                        <span class="sc-count-ok">✓ {{ $summary['passed'] }} passed</span>
+                        <span class="sc-count-err">✗ {{ $summary['failed'] }} failed</span>
+                        <span class="sc-count-pend">– {{ count($tools) - $summary['total'] }} pending</span>
                     </div>
                 </div>
                 <div class="sc-bar-track">
@@ -516,25 +589,17 @@
                 </div>
             </div>
             @endif
-
-            {{-- Table column headers --}}
             <div class="sc-table-head">
-                <div class="sc-th">Araç</div>
-                <div class="sc-th sc-th-c">Durum</div>
-                <div class="sc-th">Input Dosyası</div>
-                <div class="sc-th">Output Dosyası</div>
-                <div class="sc-th sc-th-r">İşlem</div>
+                <div class="sc-th">Tool</div>
+                <div class="sc-th sc-th-c">Status</div>
+                <div class="sc-th">Input File</div>
+                <div class="sc-th">Output File</div>
+                <div class="sc-th sc-th-r">Action</div>
             </div>
-
-            {{-- Tool rows --}}
             @foreach($tools as $key => $label)
             @php $result = $testResults[$key] ?? null; @endphp
             <div class="sc-tool-row">
-
-                {{-- Name --}}
                 <div class="sc-tool-name">{{ $label }}</div>
-
-                {{-- Status --}}
                 <div class="sc-status-col">
                     @if($result === null)
                     <span class="sc-dot sc-dot-none"></span>
@@ -544,8 +609,6 @@
                     <span class="sc-dot sc-dot-err">✗</span>
                     @endif
                 </div>
-
-                {{-- Input --}}
                 <div class="sc-io-col">
                     @if($result && $result['status'] === 'success')
                     <div class="sc-file-card sc-file-card-gray">
@@ -567,8 +630,6 @@
                     <span class="sc-idle-text">—</span>
                     @endif
                 </div>
-
-                {{-- Output --}}
                 <div>
                     @if($result && $result['status'] === 'success')
                     <div class="sc-file-card sc-file-card-green">
@@ -586,8 +647,6 @@
                     <span class="sc-idle-text">—</span>
                     @endif
                 </div>
-
-                {{-- Actions --}}
                 <div class="sc-actions">
                     @if($result && $result['status'] === 'success')
                     <x-filament::button size="xs" color="gray" icon="heroicon-m-arrow-down-tray"
@@ -597,7 +656,7 @@
                     <x-filament::button size="xs" color="primary" icon="heroicon-m-play"
                         wire:click="testTool('{{ $key }}')" wire:loading.attr="disabled"
                         wire:target="testTool('{{ $key }}'), runAllTests">
-                        <span wire:loading.remove wire:target="testTool('{{ $key }}')">Test</span>
+                        <span wire:loading.remove wire:target="testTool('{{ $key }}')">Run</span>
                         <span wire:loading wire:target="testTool('{{ $key }}')">...</span>
                     </x-filament::button>
                 </div>

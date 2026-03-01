@@ -34,10 +34,8 @@ class SystemCheck extends Page
     public function testTool(string $toolKey): void
     {
         try {
-            // Reset previous specific test outcome
             unset($this->testResults[$toolKey]);
 
-            // Determine sample file logic based on toolKey type.
             $inputPaths = [];
 
             if ($toolKey === 'jpg_to_pdf') {
@@ -47,19 +45,15 @@ class SystemCheck extends Page
             } elseif ($toolKey === 'excel_to_pdf') {
                 $inputPaths = [base_path('public/sample_file_example_XLS_10.xls')];
             } elseif ($toolKey === 'merge_pdf') {
-                // Requires 2 PDF files
                 $inputPaths = [base_path('public/sample.pdf'), base_path('public/sample.pdf')];
             } else {
-                // PDF input: compress_pdf, pdf_to_jpg, pdf_to_word, pdf_to_excel
                 $inputPaths = [base_path('public/sample.pdf')];
             }
 
-            // Ensure source file actually exists to provide better error messaging
             if (! file_exists($inputPaths[0])) {
                 throw new \Exception('Test sample file not found: '.basename($inputPaths[0]));
             }
 
-            // Calculate Total Input Size
             $inputSize = 0;
             $inputNames = [];
             foreach ($inputPaths as $path) {
@@ -110,7 +104,6 @@ class SystemCheck extends Page
         }
 
         $this->isRunningAll = false;
-
     }
 
     public function getTestSummary(): array
@@ -164,11 +157,48 @@ class SystemCheck extends Page
         ];
     }
 
+    public function getUbuntu24InstallGuide(): array
+    {
+        return [
+            [
+                'title' => 'Install required packages',
+                'description' => 'Run as a sudo-enabled user on Ubuntu 24.04.',
+                'command' => implode("\n", [
+                    'sudo apt update',
+                    'sudo apt install -y software-properties-common',
+                    'sudo add-apt-repository -y universe',
+                    'sudo apt update',
+                    'sudo apt install -y ghostscript libreoffice poppler-utils imagemagick img2pdf',
+                ]),
+            ],
+            [
+                'title' => 'Verify binaries',
+                'description' => 'Each line should print a valid binary path.',
+                'command' => implode("\n", [
+                    'command -v gs',
+                    'command -v libreoffice || command -v soffice',
+                    'command -v pdfunite',
+                    'command -v pdftoppm',
+                    'command -v magick || command -v img2pdf',
+                ]),
+            ],
+            [
+                'title' => 'Reload services and workers',
+                'description' => 'Restart PHP and web services, then refresh this page.',
+                'command' => implode("\n", [
+                    'sudo systemctl restart php8.4-fpm || sudo systemctl restart php-fpm',
+                    'sudo systemctl restart nginx || sudo systemctl restart apache2',
+                    'php artisan queue:restart',
+                    'php artisan horizon:terminate',
+                ]),
+            ],
+        ];
+    }
+
     private function binaryExists(string $binary): bool
     {
         $process = new Process(['which', $binary]);
 
-        // Ensure Homebrew paths are in the environment when running through a web server on macOS.
         $env = $_ENV;
         $env['PATH'] = '/opt/homebrew/bin:/usr/local/bin:'.getenv('PATH');
         $process->setEnv($env);

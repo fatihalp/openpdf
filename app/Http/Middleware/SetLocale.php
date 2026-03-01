@@ -12,6 +12,14 @@ class SetLocale
     public function handle(Request $request, Closure $next): Response
     {
         $allowed = ToolCatalog::locales();
+
+        if ($request->is('docs/api*')) {
+            $request->session()->put('locale', 'en');
+            app()->setLocale('en');
+
+            return $next($request);
+        }
+
         $routeLocale = $request->route('locale');
         $requested = is_string($routeLocale) ? $routeLocale : $request->query('lang');
 

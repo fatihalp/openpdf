@@ -23,9 +23,10 @@ class ProcessConversionTaskJob implements ShouldQueue
 
     public int $maxExceptions = 1;
 
-    public string $queue = 'conversions';
-
-    public function __construct(public int $taskId) {}
+    public function __construct(public int $taskId)
+    {
+        $this->onQueue('conversions');
+    }
 
     public function handle(ConversionPipeline $pipeline): void
     {

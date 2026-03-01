@@ -30,7 +30,7 @@ class AuthController extends Controller
         if ($clientId === '') {
             return response()->json([
                 'ok' => false,
-                'message' => 'Google login sunucuda aktif degil.',
+                'message' => 'Google login is not enabled on the server.',
             ], 503);
         }
 
@@ -41,7 +41,7 @@ class AuthController extends Controller
         if (! $response->ok()) {
             return response()->json([
                 'ok' => false,
-                'message' => 'Google token dogrulanamadi.',
+                'message' => 'Google token could not be verified.',
             ], 401);
         }
 
@@ -50,7 +50,7 @@ class AuthController extends Controller
         if (($payload['aud'] ?? null) !== $clientId) {
             return response()->json([
                 'ok' => false,
-                'message' => 'Google client id eslesmiyor.',
+                'message' => 'Google client ID mismatch.',
             ], 401);
         }
 
@@ -61,7 +61,7 @@ class AuthController extends Controller
         if ($sub === '' || $email === '') {
             return response()->json([
                 'ok' => false,
-                'message' => 'Google kullanici bilgisi eksik.',
+                'message' => 'Missing Google user information.',
             ], 401);
         }
 
@@ -71,7 +71,7 @@ class AuthController extends Controller
             ->first();
 
         if (! $user) {
-            $user = new User();
+            $user = new User;
             $user->password = Hash::make(bin2hex(random_bytes(16)));
         }
 

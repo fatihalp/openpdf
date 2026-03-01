@@ -1,6 +1,6 @@
 # OpenPDF (`openpdf.com.tr`)
 
-Laravel tabanli, cok dilli, acik kaynak PDF donusum platformu.
+Laravel-based, multilingual, open-source PDF conversion platform.
 
 ## Stack
 
@@ -11,7 +11,7 @@ Laravel tabanli, cok dilli, acik kaynak PDF donusum platformu.
 - FilamentPHP v5 (admin panel)
 - Bootstrap 5 + Vue 3
 
-## Hızlı Başlangıç
+## Quick Start
 
 ```bash
 cp .env.example .env
@@ -20,7 +20,7 @@ composer install
 npm install
 ```
 
-`.env` PostgreSQL:
+PostgreSQL `.env` example:
 
 ```env
 DB_CONNECTION=pgsql
@@ -31,7 +31,7 @@ DB_USERNAME=postgres
 DB_PASSWORD=postgres
 ```
 
-Kurulum:
+Install and seed:
 
 ```bash
 php artisan migrate
@@ -46,22 +46,22 @@ npm run dev
 php artisan horizon
 ```
 
-## Çalışma Modeli
+## Runtime Model
 
-### HTTP/UI
+### HTTP / UI
 - Public SEO route: `/{locale}/{tool-slug}/{seo-suffix}`
-- Public map route: `/{locale}/{site-map-slug}`
+- Public sitemap route: `/{locale}/{site-map-slug}`
 - API: `/api/conversions`, `/api/auth/*`
 
-### Dönüşüm Akışı
-1. Frontend dosyayı alir, dogrular.
-2. Visitor limitleri frontend + backend tarafinda kontrol edilir.
-3. Islem tipine gore:
-   - Browser-first: client-side donusum, sonra sadece task logu API'ye yazilir (`source=browser`).
-   - Backend: API task olusturur, Horizon queue job isler, sonuc `storage`'a yazilir.
-4. Cikti indirme linki task uzerinden verilir.
+### Conversion Flow
+1. Frontend receives and validates uploaded files.
+2. Visitor limits are validated on both frontend and backend.
+3. By tool runtime:
+   - Browser-first: client-side conversion, then only task logging to API (`source=browser`).
+   - Backend: API creates task, Horizon processes queue job, output is written to `storage`.
+4. Download URL is returned from the task payload.
 
-## Araç Matrisi (Client / Backend)
+## Tool Matrix (Client / Backend)
 
 | Tool key | UI label | Runtime | Engine |
 |---|---|---|---|
@@ -70,53 +70,57 @@ php artisan horizon
 | `merge_pdf` | Merge PDF | Backend | `pdfunite` |
 | `compress_pdf` | Compress PDF | Backend | `gs` (Ghostscript) |
 | `pdf_to_jpg` | PDF to JPG | Backend | `pdftoppm` |
-| `pdf_to_word` | PDF to Word | Backend | `libreoffice --headless` (veya `soffice --headless`) |
-| `pdf_to_excel` | PDF to Excel | Backend | `libreoffice --headless` (veya `soffice --headless`) |
-| `word_to_pdf` | Word to PDF | Backend | `libreoffice --headless` (veya `soffice --headless`) |
-| `excel_to_pdf` | Excel to PDF | Backend | `libreoffice --headless` (veya `soffice --headless`) |
+| `pdf_to_word` | PDF to Word | Backend | `libreoffice --headless` (or `soffice --headless`) |
+| `pdf_to_excel` | PDF to Excel | Backend | `libreoffice --headless` (or `soffice --headless`) |
+| `word_to_pdf` | Word to PDF | Backend | `libreoffice --headless` (or `soffice --headless`) |
+| `excel_to_pdf` | Excel to PDF | Backend | `libreoffice --headless` (or `soffice --headless`) |
 
-Not:
-- `jpg_to_pdf` backend adaptoru pipeline'da mevcuttur (`img2pdf` veya `magick`), ancak mevcut public UI browser-first calisir.
-- `split_pdf` su an backend queue yerine browser'da calisir.
+Notes:
+- `jpg_to_pdf` backend adapter exists in the pipeline (`img2pdf` or `magick`), but the public UI currently runs browser-first.
+- `split_pdf` currently runs in browser instead of backend queue.
 
-## Backend Binary Gereksinimleri
+## Backend Binary Requirements
 
-- `pdfunite`
-- `gs`
-- `pdftoppm`
-- `libreoffice` veya `soffice` (LibreOffice)
-- (opsiyonel) `img2pdf` veya `magick`
+- `gs` (Ghostscript)
+- `libreoffice` or `soffice` (LibreOffice headless)
+- `pdfunite` (Poppler Utils)
+- `pdftoppm` (Poppler Utils)
+- `magick` (ImageMagick) or `img2pdf` for backend `jpg_to_pdf`
 
-Eksik binary varsa ilgili task `failed` olur ve hata mesaji `conversion_tasks.error_message` alanina yazilir.
+If a required binary is missing, related conversion tasks fail and the error is written to `conversion_tasks.error_message`.
 
-### LibreOffice headless kurulum
+### Ubuntu Installation (for `/admin/system-check`)
 
-macOS (Homebrew):
-
-```bash
-brew install --cask libreoffice
-soffice --version
-```
-
-Ubuntu:
+Install all required packages:
 
 ```bash
 sudo apt update
-sudo apt install -y libreoffice
-libreoffice --version
+sudo apt install -y ghostscript libreoffice poppler-utils imagemagick img2pdf
 ```
 
-Not:
-- Bu proje macOS tarafinda `soffice` binary'sini da destekler.
-- CI/production Linux ortamlarda `libreoffice` binary adi yaygindir.
+Verify installed binaries:
 
-## Kimlik / Limit
+```bash
+gs --version
+libreoffice --version
+pdfunite -v
+pdftoppm -v
+magick -version || convert -version
+img2pdf --version
+```
 
-- Uyelik zorunlu degil.
-- Visitor limiti: `100` dosya, `100MB` (config: `openpdf.visitor_limits`).
-- Google login: limitsiz mod.
+Notes:
+- `pdfunite` and `pdftoppm` are provided by `poppler-utils`.
+- `jpg_to_pdf` backend works when either `img2pdf` or ImageMagick is available.
+- On Linux servers, `libreoffice` is typically used as the headless binary.
+
+## Authentication and Limits
+
+- Login is optional.
+- Visitor limits: `100` files, `100MB` (config: `openpdf.visitor_limits`).
+- Google login enables unlimited mode.
 - Google config: `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`.
-- Admin Google setup help: `/admin/google-login-help`
+- Admin Google setup help: `/admin/google-login-help`.
 
 Admin seed:
 
@@ -124,12 +128,12 @@ Admin seed:
 php artisan db:seed --class=AdminUserSeeder
 ```
 
-Varsayilan:
-- email: `a@a.com`
-- password: `236330`
+Default credentials:
+- Email: `a@a.com`
+- Password: `236330`
 
-## Dil / SEO
+## Locale and SEO
 
-- 20 locale desteklenir (`config/openpdf.php` -> `locales`).
-- Locale bazli SEO suffix: `config/openpdf.php` -> `route_slugs`.
-- Dinamik sitemap XML: `/sitemap.xml`
+- 20 locales are supported (`config/openpdf.php` -> `locales`).
+- Locale-specific SEO suffixes are configured in `config/openpdf.php` -> `route_slugs`.
+- Dynamic sitemap XML: `/sitemap.xml`.

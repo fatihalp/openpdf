@@ -48,17 +48,17 @@ class ConversionPipeline
             'pdf_to_word' => $this->officeConvert($inputPaths, $workDir, 'docx'),
             'pdf_to_excel' => $this->pdfToExcel($inputPaths, $workDir),
             'jpg_to_pdf' => $this->jpgToPdf($inputPaths, $workDir),
-            default => throw new \RuntimeException('Desteklenmeyen donusum araci: '.escapeshellarg($tool)),
+            default => throw new \RuntimeException('Unsupported conversion tool: '.escapeshellarg($tool)),
         };
     }
 
     private function mergePdf(array $inputPaths, string $workDir): array
     {
         if (count($inputPaths) < 2) {
-            throw new \RuntimeException('Merge PDF icin en az 2 PDF dosyasi gerekir.');
+            throw new \RuntimeException('Merge PDF requires at least 2 PDF files.');
         }
 
-        $this->assertBinary('pdfunite', 'poppler-utils (pdfunite) kurulu olmali.');
+        $this->assertBinary('pdfunite', 'poppler-utils (pdfunite) must be installed.');
 
         $output = $workDir.'/merged.pdf';
         $this->run(['pdfunite', ...$inputPaths, $output]);
@@ -69,10 +69,10 @@ class ConversionPipeline
     private function compressPdf(array $inputPaths, string $workDir): array
     {
         if (count($inputPaths) !== 1) {
-            throw new \RuntimeException('Compress PDF bir adet PDF bekler.');
+            throw new \RuntimeException('Compress PDF expects exactly one PDF file.');
         }
 
-        $this->assertBinary('gs', 'Ghostscript (gs) kurulu olmali.');
+        $this->assertBinary('gs', 'Ghostscript (gs) must be installed.');
 
         $input = $inputPaths[0];
         $output = $workDir.'/compressed.pdf';
@@ -108,10 +108,10 @@ class ConversionPipeline
     private function pdfToJpg(array $inputPaths, string $workDir): array
     {
         if (count($inputPaths) !== 1) {
-            throw new \RuntimeException('PDF to JPG bir adet PDF bekler.');
+            throw new \RuntimeException('PDF to JPG expects exactly one PDF file.');
         }
 
-        $this->assertBinary('pdftoppm', 'poppler-utils (pdftoppm) kurulu olmali.');
+        $this->assertBinary('pdftoppm', 'poppler-utils (pdftoppm) must be installed.');
 
         $prefix = $workDir.'/page';
         $this->run(['pdftoppm', '-jpeg', '-r', '150', $inputPaths[0], $prefix]);
@@ -119,7 +119,7 @@ class ConversionPipeline
         $pages = collect(glob($workDir.'/page-*.jpg') ?: [])->sort()->values();
 
         if ($pages->isEmpty()) {
-            throw new \RuntimeException('PDF to JPG cikti uretmedi.');
+            throw new \RuntimeException('PDF to JPG produced no output.');
         }
 
         if ($pages->count() === 1) {
@@ -130,7 +130,7 @@ class ConversionPipeline
         $zip = new ZipArchive;
 
         if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
-            throw new \RuntimeException('ZIP dosyasi olusturulamadi.');
+            throw new \RuntimeException('Failed to create ZIP file.');
         }
 
         foreach ($pages as $pagePath) {
@@ -145,7 +145,7 @@ class ConversionPipeline
     private function officeConvert(array $inputPaths, string $workDir, string $targetExt): array
     {
         if (count($inputPaths) !== 1) {
-            throw new \RuntimeException('Bu arac tek dosya ile calisir.');
+            throw new \RuntimeException('This tool works with a single file only.');
         }
 
         $officeBinary = $this->officeBinary();
@@ -160,7 +160,7 @@ class ConversionPipeline
 
         array_push($command, '--convert-to', $targetExt, '--outdir', $workDir, $inputPaths[0]);
 
-        $process = $this->run($command, 'LibreOffice donusumu basarisiz.');
+        $process = $this->run($command, 'LibreOffice conversion failed.');
 
         $expected = pathinfo($inputPaths[0], PATHINFO_FILENAME).'.'.$targetExt;
         $output = $workDir.'/'.$expected;
@@ -182,14 +182,14 @@ class ConversionPipeline
                 'stderr' => trim($process->getErrorOutput()),
             ]);
 
-            $message = 'LibreOffice cikti uretmedi.';
+            $message = 'LibreOffice produced no output.';
 
             if ($diagnostics !== '') {
-                $message .= ' Detay: '.$diagnostics;
+                $message .= ' Details: '.$diagnostics;
             }
 
-            $message .= ' Olasi nedenler: PDF tarama/gorsel tabanli olabilir, dosya korumali olabilir veya LibreOffice PDF importu bu dosya icin DOCX/XLSX cikti olusturamamis olabilir.';
-            $message .= ' Komut: '.$this->commandToString($command);
+            $message .= ' Possible causes: the PDF may be scanned or image-based, the file may be protected, or LibreOffice PDF import may not support DOCX/XLSX output for this file.';
+            $message .= ' Command: '.$this->commandToString($command);
 
             throw new \RuntimeException($message);
         }
@@ -207,22 +207,20 @@ class ConversionPipeline
     private function pdfToExcel(array $inputPaths, string $workDir): array
     {
         if (count($inputPaths) !== 1) {
-            throw new \RuntimeException('PDF to Excel tek dosya bekler.');
+            throw new \RuntimeException('PDF to Excel expects exactly one file.');
         }
 
-        $this->assertBinary('pdftotext', 'poppler-utils (pdftotext) kurulu olmali.');
+        $this->assertBinary('pdftotext', 'poppler-utils (pdftotext) must be installed.');
 
         $txtFile = $workDir.'/extracted.txt';
         $csvFile = $workDir.'/converted.csv';
         $outputXlsx = $workDir.'/converted.xlsx';
 
-        // 1. Convert to txt layout
         $this->run(['pdftotext', '-layout', $inputPaths[0], $txtFile]);
 
-        // 2. Build a CSV
         $lines = file($txtFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         if ($lines === false) {
-            throw new \RuntimeException('Metin dosyasi okunamadi.');
+            throw new \RuntimeException('Failed to read extracted text file.');
         }
 
         $fp = fopen($csvFile, 'w');
@@ -232,7 +230,6 @@ class ConversionPipeline
         }
         fclose($fp);
 
-        // 3. Convert CSV to XLSX
         $officeBinary = $this->officeBinary();
         $this->run([
             $officeBinary,
@@ -243,10 +240,10 @@ class ConversionPipeline
             '--outdir',
             $workDir,
             $csvFile,
-        ], 'CSV to XLSX (LibreOffice) donusumu');
+        ], 'CSV to XLSX conversion failed.');
 
         if (! is_file($outputXlsx)) {
-            throw new \RuntimeException('LibreOffice CSV to XLSX basarisiz oldu. Dosya uretilemedi.');
+            throw new \RuntimeException('LibreOffice CSV to XLSX conversion failed. Output file was not created.');
         }
 
         return $this->storeOutput($outputXlsx, 'converted.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -263,7 +260,7 @@ class ConversionPipeline
         } elseif ($this->binaryExists('convert')) {
             $this->run(['convert', ...$inputPaths, $output]);
         } else {
-            throw new \RuntimeException('JPG to PDF backend icin img2pdf veya ImageMagick gerekli.');
+            throw new \RuntimeException('JPG to PDF backend requires img2pdf or ImageMagick.');
         }
 
         return $this->storeOutput($output, 'images.pdf', 'application/pdf');
@@ -272,7 +269,7 @@ class ConversionPipeline
     private function storeOutput(string $sourcePath, string $name, string $mime): array
     {
         if (! is_file($sourcePath)) {
-            throw new \RuntimeException('Donusum cikti dosyasi bulunamadi.');
+            throw new \RuntimeException('Conversion output file was not found.');
         }
 
         $outputPath = 'conversions/outputs/'.date('Y/m/d').'/'.Str::uuid()->toString().'_'.$name;
@@ -292,7 +289,6 @@ class ConversionPipeline
         $process = new Process($command);
         $process->setTimeout(900);
 
-        // Ensure Homebrew paths are in the environment when running through a web server on macOS.
         $env = $_ENV;
         $env['PATH'] = '/opt/homebrew/bin:/usr/local/bin:'.getenv('PATH');
         $process->setEnv($env);
@@ -300,15 +296,15 @@ class ConversionPipeline
         $process->run();
 
         if (! $process->isSuccessful()) {
-            $message = ($context ? $context.' ' : '').'Komut basarisiz oldu.';
+            $message = ($context ? $context.' ' : '').'Command failed.';
             $message .= ' Exit code: '.($process->getExitCode() ?? 'n/a').'.';
 
             $details = $this->commandOutput($process);
             if ($details !== '') {
-                $message .= ' Detay: '.$details;
+                $message .= ' Details: '.$details;
             }
 
-            $message .= ' Komut: '.$this->commandToString($command);
+            $message .= ' Command: '.$this->commandToString($command);
 
             throw new \RuntimeException($message);
         }
@@ -337,14 +333,13 @@ class ConversionPipeline
             return '/Applications/LibreOffice.app/Contents/MacOS/soffice';
         }
 
-        throw new \RuntimeException('LibreOffice headless kurulu olmali (libreoffice veya soffice).');
+        throw new \RuntimeException('LibreOffice headless must be installed (libreoffice or soffice).');
     }
 
     private function binaryExists(string $binary): bool
     {
         $process = new Process(['which', $binary]);
 
-        // Ensure Homebrew paths are in the environment when running through a web server on macOS.
         $env = $_ENV;
         $env['PATH'] = '/opt/homebrew/bin:/usr/local/bin:'.getenv('PATH');
         $process->setEnv($env);

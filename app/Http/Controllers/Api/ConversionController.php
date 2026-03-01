@@ -34,7 +34,7 @@ class ConversionController extends Controller
         if (! ToolCatalog::isValid($toolKey)) {
             return response()->json([
                 'ok' => false,
-                'message' => 'Gecersiz arac secildi.',
+                'message' => 'Invalid conversion tool selected.',
             ], 422);
         }
 
@@ -68,7 +68,7 @@ class ConversionController extends Controller
                 if (! isset($file['data']) || ! is_string($file['data']) || $file['data'] === '') {
                     return response()->json([
                         'ok' => false,
-                        'message' => 'Backend donusumu icin dosya icerigi gereklidir.',
+                        'message' => 'File content is required for backend conversion.',
                     ], 422);
                 }
 
@@ -119,7 +119,7 @@ class ConversionController extends Controller
         if ($task->status !== ConversionTask::STATUS_COMPLETED || ! $task->output_path) {
             return response()->json([
                 'ok' => false,
-                'message' => 'Cikti henuz hazir degil.',
+                'message' => 'Output is not ready yet.',
             ], 422);
         }
 
@@ -128,7 +128,7 @@ class ConversionController extends Controller
         if (! is_file($absolutePath)) {
             return response()->json([
                 'ok' => false,
-                'message' => 'Cikti dosyasi bulunamadi.',
+                'message' => 'Output file not found.',
             ], 404);
         }
 
@@ -182,12 +182,12 @@ class ConversionController extends Controller
         $limits = ToolCatalog::visitorLimits();
 
         if ($fileCount > $limits['max_files']) {
-            abort(422, "Ziyaretci limiti asildi: en fazla {$limits['max_files']} dosya.");
+            abort(422, "Visitor limit exceeded: maximum {$limits['max_files']} files.");
         }
 
         if ($totalBytes > $limits['max_bytes']) {
             $maxMb = (int) floor($limits['max_bytes'] / (1024 * 1024));
-            abort(422, "Ziyaretci limiti asildi: en fazla {$maxMb} MB.");
+            abort(422, "Visitor limit exceeded: maximum {$maxMb} MB.");
         }
     }
 
@@ -206,7 +206,7 @@ class ConversionController extends Controller
             $mimeOk = $mime !== '' && in_array($mime, $allowedMime, true);
 
             if (! $extensionOk && ! $mimeOk) {
-                abort(422, "{$name} dosya turu secili arac ile uyumlu degil.");
+                abort(422, "File type is not compatible with the selected tool: {$name}.");
             }
         }
     }
@@ -217,7 +217,7 @@ class ConversionController extends Controller
         $decoded = base64_decode($clean, true);
 
         if ($decoded === false) {
-            abort(422, 'Dosya verisi decode edilemedi.');
+            abort(422, 'Failed to decode file data.');
         }
 
         return $decoded;

@@ -1,61 +1,81 @@
 <!doctype html>
 <html lang="{{ $locale }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $title }}</title>
     <meta name="description" content="{{ $description }}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    @vite(['resources/css/app.css'])
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/openpdf.css') }}">
 </head>
-<body class="openpdf-home theme-dark">
+
+<body
+    class="bg-apple-bg text-apple-text font-sans antialiased min-h-screen flex flex-col selection:bg-apple-blue selection:text-white">
+
     @include('partials.public-header', ['headerMenu' => $headerMenu])
 
-    <main class="op-home-main">
-        <div class="container">
-            <section class="op-home-slogan">
-                <h1>{{ __('openpdf.home.slogan_title', [], $locale) }}</h1>
-                <p>{{ __('openpdf.home.slogan_subtitle', [], $locale) }}</p>
-            </section>
+    <main class="flex-grow">
+        <!-- Hero Section -->
+        <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 text-center">
+            <h1 class="text-4xl md:text-5xl lg:text-5xl font-bold tracking-tight text-apple-text mb-4">
+                {{ __('openpdf.home.slogan_title', [], $locale) }}
+            </h1>
+            <p class="text-lg md:text-xl text-apple-muted max-w-3xl mx-auto leading-relaxed">
+                {{ __('openpdf.home.slogan_subtitle', [], $locale) }}
+            </p>
+        </section>
 
-            <div class="op-tools-grid">
+        <!-- Tools Grid -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
                 @php
-                    $toolIcons = [
-                        'pdf_to_word' => 'bi-file-earmark-word',
-                        'pdf_to_excel' => 'bi-file-earmark-excel',
-                        'pdf_to_jpg' => 'bi-filetype-jpg',
-                        'compress_pdf' => 'bi-file-zip',
-                        'merge_pdf' => 'bi-files',
-                        'split_pdf' => 'bi-scissors',
-                        'word_to_pdf' => 'bi-file-earmark-pdf',
-                        'excel_to_pdf' => 'bi-file-earmark-pdf',
-                        'jpg_to_pdf' => 'bi-images',
-                    ];
+                $toolIcons = [
+                'pdf_to_word' => ['icon' => 'bi-file-word', 'color' => 'text-blue-500', 'bg' => 'bg-blue-50'],
+                'pdf_to_excel' => ['icon' => 'bi-file-excel', 'color' => 'text-green-600', 'bg' => 'bg-green-50'],
+                'pdf_to_jpg' => ['icon' => 'bi-file-image', 'color' => 'text-yellow-500', 'bg' => 'bg-yellow-50'],
+                'compress_pdf' => ['icon' => 'bi-arrows-angle-contract', 'color' => 'text-red-500', 'bg' =>
+                'bg-red-50'],
+                'merge_pdf' => ['icon' => 'bi-file-earmark-plus', 'color' => 'text-purple-500', 'bg' => 'bg-purple-50'],
+                'split_pdf' => ['icon' => 'bi-layout-split', 'color' => 'text-orange-500', 'bg' => 'bg-orange-50'],
+                'word_to_pdf' => ['icon' => 'bi-file-pdf', 'color' => 'text-blue-500', 'bg' => 'bg-blue-50'],
+                'excel_to_pdf' => ['icon' => 'bi-file-pdf', 'color' => 'text-green-600', 'bg' => 'bg-green-50'],
+                'jpg_to_pdf' => ['icon' => 'bi-file-pdf', 'color' => 'text-yellow-500', 'bg' => 'bg-yellow-50'],
+                ];
                 @endphp
+
                 @foreach ($tools as $tool)
-                    <a href="{{ $tool['url'] }}" class="op-tool-card">
-                        <span class="op-tool-icon">
-                            <i class="bi {{ $toolIcons[$tool['key']] ?? 'bi-file-earmark-text' }}"></i>
-                        </span>
-                        <h2>{{ $tool['title'] }}</h2>
-                        <p>{{ $tool['description'] }}</p>
-                    </a>
+                @php
+                $iconData = $toolIcons[$tool['key']] ?? ['icon' => 'bi-file-earmark-text', 'color' => 'text-gray-500',
+                'bg' => 'bg-gray-50'];
+                @endphp
+                <a href="{{ $tool['url'] }}"
+                    class="group bg-white rounded-2xl p-6 border border-apple-border/40 hover:border-transparent hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 flex flex-col h-full">
+                    <div
+                        class="mb-5 {{ $iconData['bg'] }} w-14 h-14 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+                        <i class="bi {{ $iconData['icon'] }} {{ $iconData['color'] }} text-2xl"></i>
+                    </div>
+                    <h2
+                        class="text-xl font-bold text-apple-text mb-2 leading-tight group-hover:text-apple-blue transition-colors">
+                        {{ $tool['title'] }}</h2>
+                    <p class="text-sm text-apple-muted leading-relaxed line-clamp-3">
+                        {{ $tool['description'] }}
+                    </p>
+                </a>
                 @endforeach
             </div>
 
-            <section class="op-home-donate">
-                <a class="op-home-donate-btn" href="https://github.com/sponsors/fatihalp">
+            <div class="mt-16 text-center">
+                <a class="inline-flex items-center justify-center gap-2 bg-apple-blue hover:bg-apple-blue-hover text-white px-6 py-3 rounded-full font-semibold transition-colors duration-200"
+                    href="https://github.com/sponsors/fatihalp">
                     <i class="bi bi-heart-fill"></i>
                     <span>Donate on GitHub Sponsors</span>
                 </a>
-            </section>
-        </div>
+            </div>
+        </section>
     </main>
 
     @include('partials.floating-controls', ['locale' => $locale, 'localeLinks' => $localeLinks])
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script src="{{ asset('js/theme-switcher.js') }}"></script>
 </body>
+
 </html>

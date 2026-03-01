@@ -24,10 +24,6 @@
             overflow: hidden;
         }
 
-        .dark .sc-card {
-            background: #111827;
-            border-color: #1f2937;
-        }
 
         .sc-card-head {
             padding: 12px 20px;
@@ -39,10 +35,6 @@
             gap: 12px;
         }
 
-        .dark .sc-card-head {
-            background: rgba(17, 24, 39, 0.6);
-            border-color: #1f2937;
-        }
 
         .sc-card-head h3 {
             margin: 0;
@@ -51,9 +43,6 @@
             color: #111827;
         }
 
-        .dark .sc-card-head h3 {
-            color: #f9fafb;
-        }
 
         .sc-card-body {
             padding: 0;
@@ -68,9 +57,6 @@
             border-bottom: 1px solid #f3f4f6;
         }
 
-        .dark .sc-row {
-            border-color: #1f2937;
-        }
 
         .sc-row:last-child {
             border-bottom: none;
@@ -82,9 +68,6 @@
             color: #111827;
         }
 
-        .dark .sc-label {
-            color: #f9fafb;
-        }
 
         .sc-sublabel {
             font-size: 11px;
@@ -105,30 +88,18 @@
             color: #15803d;
         }
 
-        .dark .sc-badge-ok {
-            background: rgba(21, 128, 61, .15);
-            color: #4ade80;
-        }
 
         .sc-badge-err {
             background: #fee2e2;
             color: #dc2626;
         }
 
-        .dark .sc-badge-err {
-            background: rgba(220, 38, 38, .15);
-            color: #f87171;
-        }
 
         .sc-badge-gray {
             background: #f3f4f6;
             color: #6b7280;
         }
 
-        .dark .sc-badge-gray {
-            background: rgba(255, 255, 255, .05);
-            color: #9ca3af;
-        }
 
         /* Main tests card */
         .sc-tests {
@@ -146,10 +117,6 @@
             flex-wrap: wrap;
         }
 
-        .dark .sc-tests-head {
-            background: rgba(17, 24, 39, 0.6);
-            border-color: #1f2937;
-        }
 
         .sc-tests-head-left {
             display: flex;
@@ -165,9 +132,6 @@
             color: #111827;
         }
 
-        .dark .sc-tests-head h2 {
-            color: #f9fafb;
-        }
 
         .sc-badges {
             display: flex;
@@ -182,9 +146,6 @@
             border-bottom: 1px solid #f3f4f6;
         }
 
-        .dark .sc-progress-wrap {
-            border-color: #1f2937;
-        }
 
         .sc-progress-meta {
             display: flex;
@@ -228,9 +189,6 @@
             overflow: hidden;
         }
 
-        .dark .sc-bar-track {
-            background: #1f2937;
-        }
 
         .sc-bar-fill {
             height: 100%;
@@ -256,10 +214,6 @@
             background: rgba(249, 250, 251, .4);
         }
 
-        .dark .sc-table-head {
-            border-color: #1f2937;
-            background: rgba(255, 255, 255, .02);
-        }
 
         .sc-th {
             font-size: 10px;
@@ -293,9 +247,6 @@
             transition: background .15s;
         }
 
-        .dark .sc-tool-row {
-            border-color: #1f2937;
-        }
 
         .sc-tool-row:last-child {
             border-bottom: none;
@@ -305,9 +256,6 @@
             background: rgba(249, 250, 251, .8);
         }
 
-        .dark .sc-tool-row:hover {
-            background: rgba(255, 255, 255, .02);
-        }
 
         @media(max-width:1024px) {
             .sc-tool-row {
@@ -331,9 +279,6 @@
             color: #111827;
         }
 
-        .dark .sc-tool-name {
-            color: #f9fafb;
-        }
 
         .sc-status-col {
             display: flex;
@@ -355,29 +300,18 @@
             background: #e5e7eb;
         }
 
-        .dark .sc-dot-none {
-            background: #374151;
-        }
 
         .sc-dot-ok {
             background: #dcfce7;
             color: #15803d;
         }
 
-        .dark .sc-dot-ok {
-            background: rgba(21, 128, 61, .2);
-            color: #4ade80;
-        }
 
         .sc-dot-err {
             background: #fee2e2;
             color: #dc2626;
         }
 
-        .dark .sc-dot-err {
-            background: rgba(220, 38, 38, .2);
-            color: #f87171;
-        }
 
         .sc-io {
             display: flex;
@@ -402,20 +336,12 @@
             border: 1px solid #e5e7eb;
         }
 
-        .dark .sc-file-card-gray {
-            background: rgba(255, 255, 255, .04);
-            border-color: #374151;
-        }
 
         .sc-file-card-green {
             background: #f0fdf4;
             border: 1px solid #bbf7d0;
         }
 
-        .dark .sc-file-card-green {
-            background: rgba(21, 128, 61, .08);
-            border-color: rgba(21, 128, 61, .2);
-        }
 
         .sc-file-card-red {
             flex: 1;
@@ -425,10 +351,6 @@
             border: 1px solid #fecaca;
         }
 
-        .dark .sc-file-card-red {
-            background: rgba(220, 38, 38, .08);
-            border-color: rgba(220, 38, 38, .2);
-        }
 
         .sc-file-name {
             font-size: 12px;
@@ -439,9 +361,6 @@
             text-overflow: ellipsis;
         }
 
-        .dark .sc-file-name {
-            color: #d1d5db;
-        }
 
         .sc-file-size {
             font-size: 10px;
@@ -455,9 +374,6 @@
             line-height: 1;
         }
 
-        .dark .sc-file-size-green {
-            color: #4ade80;
-        }
 
         .sc-arrow {
             font-size: 14px;
@@ -465,9 +381,6 @@
             flex-shrink: 0;
         }
 
-        .dark .sc-arrow {
-            color: #374151;
-        }
 
         .sc-idle-text {
             font-size: 12px;
@@ -475,9 +388,6 @@
             font-style: italic;
         }
 
-        .dark .sc-idle-text {
-            color: #374151;
-        }
 
         .sc-err-text {
             font-size: 12px;
@@ -485,9 +395,6 @@
             font-weight: 500;
         }
 
-        .dark .sc-err-text {
-            color: #f87171;
-        }
 
         .sc-actions {
             display: flex;

@@ -2,7 +2,7 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Pages\GoogleLoginHelp;
+use App\Filament\Developer\Pages\Auth\Login;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -18,25 +18,30 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
-class AdminPanelProvider extends PanelProvider
+class DeveloperPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
         return $panel
-            ->id('admin')
-            ->path('admin')
-            ->login()
+            ->id('developer')
+            ->path('developer')
+            ->login(Login::class)
             ->brandLogo(asset('img/openpdf-logo.svg'))
             ->brandLogoHeight('2rem')
             ->darkMode(false)
             ->colors([
-                'primary' => Color::Red,
+                'primary' => Color::Blue,
             ])
-            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
-            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+            ->discoverResources(in: app_path('Filament/Developer/Resources'), for: 'App\\Filament\\Developer\\Resources')
+            ->discoverPages(in: app_path('Filament/Developer/Pages'), for: 'App\\Filament\\Developer\\Pages')
             ->pages([
                 Dashboard::class,
-                GoogleLoginHelp::class,
+            ])
+            ->navigationItems([
+                \Filament\Navigation\NavigationItem::make('API Documentation')
+                    ->url('/docs/api')
+                    ->icon('heroicon-o-document-text')
+                    ->sort(3),
             ])
             ->middleware([
                 EncryptCookies::class,

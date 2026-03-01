@@ -15,22 +15,6 @@
   --op-shadow: 0 12px 26px rgba(0, 0, 0, 0.08);
 }
 
-body.theme-dark {
-  --op-bg: #000000;
-  --op-card: #111114;
-  --op-surface: #141418;
-  --op-line: #2a2a30;
-  --op-text: #f5f5f7;
-  --op-muted: #a1a1aa;
-  --op-blue: #0a84ff;
-  --op-blue-hover: #3698ff;
-  --op-blue-soft: rgba(10, 132, 255, 0.2);
-  --op-header-bg: rgba(14, 14, 16, 0.88);
-  --op-hover-bg: rgba(255, 255, 255, 0.08);
-  --op-soft-border: #2f3036;
-  --op-card-border: #2a2b32;
-  --op-shadow: 0 16px 32px rgba(0, 0, 0, 0.35);
-}
 
 [v-cloak] {
   display: none;
@@ -94,9 +78,6 @@ a {
   color: #111214;
 }
 
-body.theme-dark .op-brand-logo {
-  color: #f5f5f7;
-}
 
 .op-nav-link,
 .op-nav-dropdown {
@@ -324,30 +305,10 @@ body.theme-dark .op-brand-logo {
   background: var(--op-blue-hover);
 }
 
-body.theme-dark .op-home-donate-btn {
-  box-shadow: 0 8px 16px rgba(10, 132, 255, 0.24);
-}
 
-body.theme-dark .op-tool-card {
-  background: linear-gradient(180deg, #121317 0%, #0e1015 100%);
-  border-color: #262932;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
-}
 
-body.theme-dark .op-tool-card:hover {
-  border-color: #3d4456;
-  box-shadow: 0 20px 34px rgba(0, 0, 0, 0.46);
-}
 
-body.theme-dark .op-tool-icon {
-  background: #0f1117;
-  border-color: #313749;
-  color: #f5f5f7;
-}
 
-body.theme-dark .op-tool-card p {
-  color: #b4b9c8;
-}
 
 .op-tool-card {
   opacity: 0;
@@ -1035,138 +996,31 @@ body.theme-dark .op-tool-card p {
   font-size: 2.4rem;
 }
 
-body.theme-dark .op-work-left {
-  background: #14161d;
-}
 
-body.theme-dark .op-work-left.hover {
-  background: #192335;
-}
 
-body.theme-dark .file-card {
-  background: #181b24;
-  border-color: #2f3442;
-}
 
-body.theme-dark .op-page-card {
-  background: #181b24;
-  border-color: #2f3442;
-}
 
-body.theme-dark .op-page-card.is-selected {
-  border-color: #2b87e5;
-  box-shadow: inset 0 0 0 1px rgba(43, 135, 229, 0.56);
-}
 
-body.theme-dark .op-page-check {
-  background: #10131b;
-  border-color: #3b4356;
-  color: #7884a0;
-}
 
-body.theme-dark .op-page-card.is-selected .op-page-check {
-  background: #0a84ff;
-  border-color: #0671dc;
-  color: #ffffff;
-}
 
-body.theme-dark .op-page-number {
-  color: #bcc2d5;
-}
 
-body.theme-dark .preview-box {
-  background: #10131b;
-  border-color: #323746;
-}
 
-body.theme-dark .file-name {
-  color: #bcc2d5;
-}
 
-body.theme-dark .op-floating-sort {
-  background: #161820;
-  color: #f5f5f7;
-  border-color: #323646;
-}
 
-body.theme-dark .op-work-right {
-  background: #11141b;
-  border-left-color: #2d3241;
-}
 
-body.theme-dark .op-work-right h2 {
-  border-bottom-color: #2d3241;
-}
 
-body.theme-dark .op-info-box {
-  background: rgba(10, 132, 255, 0.2);
-  color: #d7e8ff;
-}
 
-body.theme-dark .op-info-box i {
-  color: #9dc5ff;
-}
 
-body.theme-dark .op-work-cta {
-  background: rgba(10, 132, 255, 0.12);
-}
 
-body.theme-dark .op-split-tab {
-  border-color: #394153;
-  background: #171b25;
-  color: #aeb5c8;
-}
 
-body.theme-dark .op-split-tab.active {
-  color: #f5f5f7;
-  border-color: #547fb4;
-  box-shadow: inset 0 0 0 1px #547fb4;
-}
 
-body.theme-dark .op-split-action {
-  background: #171b25;
-  border-color: #394153;
-  color: #aeb5c8;
-}
 
-body.theme-dark .op-split-action.active {
-  border-color: #4e95df;
-  color: #9ecaff;
-  box-shadow: inset 0 0 0 1px #4e95df;
-}
 
-body.theme-dark .op-result-back {
-  background: #2a2f3d;
-}
 
-body.theme-dark .dropdown-item {
-  color: var(--op-text);
-}
 
-body.theme-dark .dropdown-item:hover,
-body.theme-dark .dropdown-item:focus {
-  color: var(--op-text);
-  background: var(--op-hover-bg);
-}
 
-body.theme-dark .form-select,
-body.theme-dark .form-control {
-  background: #17171b;
-  color: var(--op-text);
-  border-color: #3a3a42;
-}
 
-body.theme-dark .form-select:focus,
-body.theme-dark .form-control:focus {
-  border-color: var(--op-blue);
-  box-shadow: 0 0 0 0.2rem rgba(10, 132, 255, 0.22);
-}
 
-body.theme-dark .list-group-item {
-  background: var(--op-card);
-  color: var(--op-text);
-  border-color: var(--op-soft-border);
-}
 
 @media (max-width: 1024px) {
   .op-tools-grid {

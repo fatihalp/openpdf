@@ -18,11 +18,14 @@ class ProcessConversionTaskJob implements ShouldQueue
     use SerializesModels;
 
     public int $tries = 1;
+
     public int $timeout = 900;
 
-    public function __construct(public int $taskId)
-    {
-    }
+    public int $maxExceptions = 1;
+
+    public string $queue = 'conversions';
+
+    public function __construct(public int $taskId) {}
 
     public function handle(ConversionPipeline $pipeline): void
     {

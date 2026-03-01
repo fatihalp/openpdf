@@ -1,19 +1,26 @@
-<svg width="220" height="48" viewBox="0 0 220 48" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="openpdfLogoTitle">
-  <title id="openpdfLogoTitle">OpenPDF</title>
-  <defs>
-    <linearGradient id="openpdfGrad" x1="4" y1="4" x2="44" y2="44" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#2997FF"/>
-      <stop offset="1" stop-color="#0071E3"/>
-    </linearGradient>
-  </defs>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 40" fill="none">
+    <!-- Icon/Graphic (Torn Paper) -->
+    <g transform="translate(0, 4)">
+        <!-- Fold/Back shadow -->
+        <path d="M10 2H22L17 7L10 2Z" fill="#E5E7EB"/>
+        <!-- Main Document Body -->
+        <path d="M6 6 C6 4.89543 6.89543 4 8 4 L22 4 L22 28 C22 29.1046 21.1046 30 20 30 L8 30 C6.89543 30 6 29.1046 6 28 L6 6 Z" fill="#2563EB"/>
+        <!-- Torn edge effect (bottom) -->
+        <path d="M6 26 L8 28 L11 25 L14 28 L17 25 L20 28 L22 26 L22 30 C22 31.1046 21.1046 32 20 32 L8 32 C6.89543 32 6 31.1046 6 30 L6 26 Z" fill="#ffffff" opacity="0.9"/>
+        <path d="M6 26 L8 28 L11 25 L14 28 L17 25 L20 28 L22 26" stroke="#ffffff" stroke-width="1.5" stroke-linejoin="round"/>
+        <!-- Document Lines -->
+        <path d="M10 10H18" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M10 14H18" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M10 18H15" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"/>
+        <!-- Format Badge -->
+        <rect x="14" y="16" width="16" height="10" rx="2" fill="#EF4444" stroke="#ffffff" stroke-width="1.5"/>
+        <text x="17" y="23" fill="#ffffff" font-family="system-ui, -apple-system, sans-serif" font-size="6" font-weight="800" letter-spacing="0.5">PDF</text>
+    </g>
 
-  <rect x="4" y="4" width="40" height="40" rx="11" fill="url(#openpdfGrad)"/>
-  <path d="M15.5 13.5H27.8L33.5 19.2V34.5H15.5V13.5Z" fill="white" fill-opacity="0.96"/>
-  <path d="M27.8 13.5V19.2H33.5" fill="#D9ECFF"/>
-  <rect x="18.5" y="23" width="12" height="1.8" rx="0.9" fill="#0071E3"/>
-  <rect x="18.5" y="27.2" width="10.2" height="1.8" rx="0.9" fill="#0071E3"/>
-
-  <text x="56" y="31" font-size="28" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif" font-weight="700" fill="#1D1D1F">
-    Open<tspan fill="#0071E3">PDF</tspan>
-  </text>
+    <!-- Typography -->
+    <g transform="translate(42, 26)">
+        <text font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="20" fill="#111827">
+            open<tspan fill="#2563EB">pdf</tspan>
+        </text>
+    </g>
 </svg>

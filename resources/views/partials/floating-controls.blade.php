@@ -4,9 +4,6 @@ $localeLinks = $localeLinks ?? [];
 @endphp
 
 <div class="op-fab-stack">
-    <button type="button" class="op-theme-btn" data-theme-toggle aria-label="Toggle theme">
-        <i class="bi bi-circle-half"></i>
-    </button>
 
     <div class="relative group op-lang-fab">
         <button

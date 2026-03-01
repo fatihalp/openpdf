@@ -1,6 +1,5 @@
 {
     "agents": [
-        "junie",
         "codex",
         "copilot",
         "gemini"

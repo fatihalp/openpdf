@@ -41,3 +41,7 @@ Thumbs.db
 /public/js/filament/support/support.js
 
 /database/*.sqlite
+public/js/filament/filament/app.js
+public/js/filament/notifications/notifications.js
+public/js/filament/schemas/components/tabs.js
+public/js/filament/schemas/components/wizard.js

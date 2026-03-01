@@ -3,7 +3,6 @@
 namespace App\Filament\Pages;
 
 use App\Services\Conversion\ConversionPipeline;
-use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Process\Process;
@@ -25,6 +24,12 @@ class SystemCheck extends Page
     protected static bool $isFullWidth = true;
 
     public array $testResults = [];
+
+    public bool $isRunningAll = false;
+
+    public int $runAllTotal = 0;
+
+    public int $runAllDone = 0;
 
     public function testTool(string $toolKey): void
     {
@@ -73,19 +78,7 @@ class SystemCheck extends Page
                 'output_path' => $output['path'],
             ];
 
-            Notification::make()
-                ->title('Test Successful')
-                ->body("Tool '{$toolKey}' completed successfully.")
-                ->success()
-                ->send();
-
         } catch (\Throwable $e) {
-            Notification::make()
-                ->title('Test Failed')
-                ->body($e->getMessage())
-                ->danger()
-                ->send();
-
             $this->testResults[$toolKey] = [
                 'status' => 'failed',
                 'error' => $e->getMessage(),
@@ -93,11 +86,47 @@ class SystemCheck extends Page
         }
     }
 
+    public function runAllTests(): void
+    {
+        $tools = [
+            'compress_pdf',
+            'word_to_pdf',
+            'excel_to_pdf',
+            'pdf_to_word',
+            'pdf_to_excel',
+            'merge_pdf',
+            'pdf_to_jpg',
+            'jpg_to_pdf',
+        ];
+
+        $this->isRunningAll = true;
+        $this->runAllTotal = count($tools);
+        $this->runAllDone = 0;
+        $this->testResults = [];
+
+        foreach ($tools as $toolKey) {
+            $this->testTool($toolKey);
+            $this->runAllDone++;
+        }
+
+        $this->isRunningAll = false;
+
+    }
+
+    public function getTestSummary(): array
+    {
+        $results = collect($this->testResults);
+
+        return [
+            'total' => $results->count(),
+            'passed' => $results->where('status', 'success')->count(),
+            'failed' => $results->where('status', 'failed')->count(),
+        ];
+    }
+
     public function downloadResult(string $toolKey)
     {
         if (! isset($this->testResults[$toolKey]) || $this->testResults[$toolKey]['status'] !== 'success') {
-            Notification::make()->title('File not found')->danger()->send();
-
             return;
         }
 

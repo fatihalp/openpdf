@@ -37,25 +37,21 @@ class SystemCheck extends Page
 
             if ($toolKey === 'jpg_to_pdf') {
                 $inputPaths = [base_path('public/sample_file_example_JPG_100kB.jpg')];
-            }
-            elseif ($toolKey === 'word_to_pdf') {
+            } elseif ($toolKey === 'word_to_pdf') {
                 $inputPaths = [base_path('public/word_docx-sample_100kB.docx')];
-            }
-            elseif ($toolKey === 'excel_to_pdf') {
+            } elseif ($toolKey === 'excel_to_pdf') {
                 $inputPaths = [base_path('public/sample_file_example_XLS_10.xls')];
-            }
-            elseif ($toolKey === 'merge_pdf') {
+            } elseif ($toolKey === 'merge_pdf') {
                 // Requires 2 PDF files
                 $inputPaths = [base_path('public/sample.pdf'), base_path('public/sample.pdf')];
-            }
-            else {
+            } else {
                 // PDF input: compress_pdf, pdf_to_jpg, pdf_to_word, pdf_to_excel
                 $inputPaths = [base_path('public/sample.pdf')];
             }
 
             // Ensure source file actually exists to provide better error messaging
-            if (!file_exists($inputPaths[0])) {
-                throw new \Exception('Test sample file not found: ' . basename($inputPaths[0]));
+            if (! file_exists($inputPaths[0])) {
+                throw new \Exception('Test sample file not found: '.basename($inputPaths[0]));
             }
 
             // Calculate Total Input Size
@@ -83,8 +79,7 @@ class SystemCheck extends Page
                 ->success()
                 ->send();
 
-        }
-        catch (\Throwable $e) {
+        } catch (\Throwable $e) {
             Notification::make()
                 ->title('Test Failed')
                 ->body($e->getMessage())
@@ -100,7 +95,7 @@ class SystemCheck extends Page
 
     public function downloadResult(string $toolKey)
     {
-        if (!isset($this->testResults[$toolKey]) || $this->testResults[$toolKey]['status'] !== 'success') {
+        if (! isset($this->testResults[$toolKey]) || $this->testResults[$toolKey]['status'] !== 'success') {
             Notification::make()->title('File not found')->danger()->send();
 
             return;
@@ -146,7 +141,7 @@ class SystemCheck extends Page
 
         // Ensure Homebrew paths are in the environment when running through a web server on macOS.
         $env = $_ENV;
-        $env['PATH'] = '/opt/homebrew/bin:/usr/local/bin:' . getenv('PATH');
+        $env['PATH'] = '/opt/homebrew/bin:/usr/local/bin:'.getenv('PATH');
         $process->setEnv($env);
 
         $process->run();

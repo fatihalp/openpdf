@@ -375,7 +375,7 @@ body.theme-dark .op-tool-card p {
 }
 
 .op-lang-fab {
-  position: static;
+  position: relative;
 }
 
 .op-lang-btn {

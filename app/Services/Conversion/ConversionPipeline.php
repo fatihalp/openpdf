@@ -74,19 +74,33 @@ class ConversionPipeline
 
         $this->assertBinary('gs', 'Ghostscript (gs) kurulu olmali.');
 
+        $input = $inputPaths[0];
         $output = $workDir.'/compressed.pdf';
 
         $this->run([
             'gs',
             '-sDEVICE=pdfwrite',
             '-dCompatibilityLevel=1.4',
-            '-dPDFSETTINGS=/ebook',
+            '-dPDFSETTINGS=/screen',
             '-dNOPAUSE',
             '-dQUIET',
             '-dBATCH',
+            '-dColorImageResolution=72',
+            '-dGrayImageResolution=72',
+            '-dMonoImageResolution=72',
+            '-dOptimize=true',
+            '-dSubsetFonts=true',
             '-sOutputFile='.$output,
-            $inputPaths[0],
+            $input,
         ]);
+
+        if (is_file($output) && filesize($output) >= filesize($input)) {
+            Log::info('Compression result larger or equal to input, using original', [
+                'input_size' => filesize($input),
+                'compressed_size' => filesize($output),
+            ]);
+            copy($input, $output);
+        }
 
         return $this->storeOutput($output, 'compressed.pdf', 'application/pdf');
     }

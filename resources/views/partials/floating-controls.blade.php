@@ -16,7 +16,7 @@ $localeLinks = $localeLinks ?? [];
             <span>{{ strtoupper($locale) }}</span>
         </button>
         <div
-            class="absolute bottom-full right-0 mb-2 w-64 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-bottom bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-apple-border/30 overflow-hidden z-50">
+            class="absolute bottom-full right-0 mb-2 w-64 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-bottom bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-apple-border/30 overflow-hidden z-50 op-lang-menu">
             <div class="py-2 grid grid-cols-2 gap-px bg-apple-border/10">
                 @foreach ($localeLinks as $item)
                 <a class="block px-4 py-2.5 text-sm font-medium text-apple-text bg-white hover:bg-black/5 hover:text-apple-blue transition-colors {{ $item['code'] === $locale ? 'text-apple-blue' : '' }}"

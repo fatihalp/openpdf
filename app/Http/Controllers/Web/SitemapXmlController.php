@@ -10,11 +10,11 @@ class SitemapXmlController extends Controller
 {
     public function __invoke(): Response
     {
-        $urls = [
-            url('/'),
-        ];
+        $urls = [];
 
         foreach (ToolCatalog::locales() as $locale) {
+            $urls[] = url(ToolCatalog::homeUrl($locale));
+
             foreach (array_keys(ToolCatalog::all()) as $toolKey) {
                 $urls[] = url(ToolCatalog::toolUrl($locale, $toolKey));
             }

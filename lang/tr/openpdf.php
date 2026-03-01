@@ -6,6 +6,13 @@ return array_replace_recursive(require base_path('lang/en/openpdf.php'), [
         'description' => 'PDF, Word, Excel ve JPG dosyalarını çevrimiçi ve ücretsiz dönüştürün. PDF to Word, PDF to Excel, PDF to JPG, Compress PDF, Merge PDF, Word to PDF, Excel to PDF, JPG to PDF.',
     ],
     'nav' => ['tools' => 'Araçlar', 'workspace' => 'Çalışma Alanı', 'limits' => 'Politika', 'donate' => 'Bağış', 'about' => 'Hakkında'],
+    'header' => [
+        'merge_pdf' => 'PDF Birleştir',
+        'split_pdf' => 'PDF Böl',
+        'compress_pdf' => 'PDF Sıkıştır',
+        'convert_pdf' => 'PDF Dönüştür',
+        'all_pdf_tools' => 'Tüm PDF Araçları',
+    ],
     'hero' => [
         'kicker' => 'Açık Kaynak Kamusal Hizmet',
         'title' => 'Herkes için ücretsiz PDF dönüşüm araçları',

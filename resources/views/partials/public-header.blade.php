@@ -2,14 +2,20 @@
 $activeToolKey = $activeToolKey ?? null;
 $headerMenu = $headerMenu ?? [];
 $convertMenu = $headerMenu['convert_menu'] ?? [];
+$homeUrl = $headerMenu['home_url'] ?? '/';
 $allToolsUrl = $headerMenu['all_tools_url'] ?? '/';
+$mergeLabel = $headerMenu['merge_label'] ?? 'Merge PDF';
+$splitLabel = $headerMenu['split_label'] ?? 'Split PDF';
+$compressLabel = $headerMenu['compress_label'] ?? 'Compress PDF';
+$convertLabel = $headerMenu['convert_label'] ?? 'Convert PDF';
+$allToolsLabel = $headerMenu['all_tools_label'] ?? 'All PDF Tools';
 @endphp
 
 <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-apple-border/50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-[980px] mx-auto px-4 sm:px-6">
         <div class="flex items-center justify-between h-20">
             <!-- Logo -->
-            <a href="/"
+            <a href="{{ $homeUrl }}"
                 class="flex flex-shrink-0 items-center justify-center gap-2 hover:opacity-80 transition-opacity">
                 <span
                     style="font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif; font-weight: 700; font-size: 1.35rem; letter-spacing: -0.02em; color: var(--op-text);">
@@ -20,20 +26,17 @@ $allToolsUrl = $headerMenu['all_tools_url'] ?? '/';
             <!-- Desktop Nav -->
             <nav class="hidden md:flex flex-1 items-center justify-center space-x-1 lg:space-x-2">
                 <a href="{{ $headerMenu['merge_url'] ?? '/' }}"
-                    class="px-3 py-2.5 text-[13px] lg:text-sm font-bold tracking-wide rounded-lg hover:bg-black/5 transition-colors {{ $activeToolKey === 'merge_pdf' ? 'text-apple-blue' : 'text-apple-text' }}">MERGE
-                    PDF</a>
+                    class="px-3 py-2.5 text-[13px] lg:text-sm font-bold tracking-wide rounded-lg hover:bg-black/5 transition-colors {{ $activeToolKey === 'merge_pdf' ? 'text-apple-blue' : 'text-apple-text' }}">{{ $mergeLabel }}</a>
                 <a href="{{ $headerMenu['split_url'] ?? $allToolsUrl }}"
-                    class="px-3 py-2.5 text-[13px] lg:text-sm font-bold tracking-wide rounded-lg hover:bg-black/5 transition-colors {{ $activeToolKey === 'split_pdf' ? 'text-apple-blue' : 'text-apple-text' }}">SPLIT
-                    PDF</a>
+                    class="px-3 py-2.5 text-[13px] lg:text-sm font-bold tracking-wide rounded-lg hover:bg-black/5 transition-colors {{ $activeToolKey === 'split_pdf' ? 'text-apple-blue' : 'text-apple-text' }}">{{ $splitLabel }}</a>
                 <a href="{{ $headerMenu['compress_url'] ?? '/' }}"
-                    class="px-3 py-2.5 text-[13px] lg:text-sm font-bold tracking-wide rounded-lg hover:bg-black/5 transition-colors {{ $activeToolKey === 'compress_pdf' ? 'text-apple-blue' : 'text-apple-text' }}">COMPRESS
-                    PDF</a>
+                    class="px-3 py-2.5 text-[13px] lg:text-sm font-bold tracking-wide rounded-lg hover:bg-black/5 transition-colors {{ $activeToolKey === 'compress_pdf' ? 'text-apple-blue' : 'text-apple-text' }}">{{ $compressLabel }}</a>
 
                 <!-- Dropdown -->
                 <div class="relative group">
                     <button
                         class="flex items-center gap-1.5 px-3 py-2.5 text-[13px] lg:text-sm font-bold tracking-wide text-apple-text rounded-lg hover:bg-black/5 transition-colors">
-                        CONVERT PDF
+                        {{ $convertLabel }}
                         <i class="bi bi-chevron-down text-[10px] mt-0.5"></i>
                     </button>
                     <!-- Dropdown menu -->
@@ -50,8 +53,7 @@ $allToolsUrl = $headerMenu['all_tools_url'] ?? '/';
                 </div>
 
                 <a href="{{ $allToolsUrl }}"
-                    class="px-3 py-2.5 text-[13px] lg:text-sm font-bold tracking-wide rounded-lg hover:bg-black/5 transition-colors {{ $activeToolKey === null ? 'text-apple-blue' : 'text-apple-text' }}">ALL
-                    PDF TOOLS</a>
+                    class="px-3 py-2.5 text-[13px] lg:text-sm font-bold tracking-wide rounded-lg hover:bg-black/5 transition-colors {{ $activeToolKey === null ? 'text-apple-blue' : 'text-apple-text' }}">{{ $allToolsLabel }}</a>
             </nav>
 
             <!-- Mobile Menu Button -->

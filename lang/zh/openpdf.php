@@ -4,6 +4,13 @@ return array_replace_recursive(require base_path('lang/en/openpdf.php'), [
     'meta' => ['title' => '免费 PDF 转换工具 | 开源 PDF 服务', 'description' => '免费在线转换 PDF、Word、Excel 和 JPG。PDF to Word, PDF to Excel, PDF to JPG, Compress PDF, Merge PDF, Word to PDF, Excel to PDF, JPG to PDF.'],
     'hero' => ['title' => '面向所有人的免费 PDF 转换工具', 'description' => '无需强制注册。访客可在公平限制下使用全部工具。Google 登录用户可使用无限模式。'],
     'auth' => ['optional' => '可选 Google 登录', 'visitor' => '访客', 'logout' => '退出'],
+    'header' => [
+        'merge_pdf' => '合并 PDF',
+        'split_pdf' => '拆分 PDF',
+        'compress_pdf' => '压缩 PDF',
+        'convert_pdf' => '转换 PDF',
+        'all_pdf_tools' => '全部 PDF 工具',
+    ],
     'workspace' => ['title' => '转换工作区', 'drop_title' => '拖放文件或点击上传', 'settings' => '转换设置', 'convert' => '转换'],
     'limits' => ['title' => '使用政策', 'visitor_limit_files' => '每次任务最多 100 个文件', 'visitor_limit_size' => '每次任务最多 100 MB', 'google_unlimited' => '文件数量与大小不限'],
     'tools' => [

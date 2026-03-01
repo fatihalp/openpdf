@@ -112,6 +112,11 @@ class ToolCatalog
         return sprintf('/%s/%s', $locale, self::siteMapSlug($locale));
     }
 
+    public static function homeUrl(string $locale): string
+    {
+        return sprintf('/%s', $locale);
+    }
+
     public static function localized(string $locale): array
     {
         $localized = [];
@@ -148,10 +153,16 @@ class ToolCatalog
         ];
 
         return [
+            'home_url' => self::homeUrl($locale),
             'merge_url' => self::toolUrl($locale, 'merge_pdf'),
             'split_url' => self::toolUrl($locale, 'split_pdf'),
             'compress_url' => self::toolUrl($locale, 'compress_pdf'),
             'all_tools_url' => self::siteMapUrl($locale),
+            'merge_label' => trans('openpdf.header.merge_pdf', [], $locale),
+            'split_label' => trans('openpdf.header.split_pdf', [], $locale),
+            'compress_label' => trans('openpdf.header.compress_pdf', [], $locale),
+            'convert_label' => trans('openpdf.header.convert_pdf', [], $locale),
+            'all_tools_label' => trans('openpdf.header.all_pdf_tools', [], $locale),
             'convert_menu' => collect($convertKeys)
                 ->map(fn (string $key) => $toolMap->get($key))
                 ->filter()

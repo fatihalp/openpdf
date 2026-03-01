@@ -9,14 +9,17 @@ use App\Http\Controllers\Web\ToolPageController;
 use App\Support\ToolCatalog;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', HomeController::class)->name('home');
-Route::get('/sitemap.xml', SitemapXmlController::class)->name('sitemap.xml');
-
 $localePattern = implode('|', ToolCatalog::locales());
 $toolPattern = implode('|', array_map(
     static fn (string $toolKey): string => ToolCatalog::toolSlug($toolKey),
     array_keys(ToolCatalog::all())
 ));
+
+Route::get('/', HomeController::class)->name('home');
+Route::get('/sitemap.xml', SitemapXmlController::class)->name('sitemap.xml');
+Route::get('/{locale}', HomeController::class)
+    ->where('locale', $localePattern)
+    ->name('home.localized');
 
 Route::get('/{locale}/{toolSlug}/{seoSlug}', [ToolPageController::class, 'show'])
     ->where('locale', $localePattern)

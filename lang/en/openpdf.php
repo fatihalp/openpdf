@@ -35,6 +35,13 @@ return [
         'donate' => 'Donate',
         'about' => 'About',
     ],
+    'header' => [
+        'merge_pdf' => 'Merge PDF',
+        'split_pdf' => 'Split PDF',
+        'compress_pdf' => 'Compress PDF',
+        'convert_pdf' => 'Convert PDF',
+        'all_pdf_tools' => 'All PDF Tools',
+    ],
     'hero' => [
         'kicker' => 'Open Source Public Service',
         'title' => 'Free PDF conversion tools for everyone',

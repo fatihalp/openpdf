@@ -85,6 +85,13 @@ class ToolPageController extends Controller
         $request->session()->put('locale', $locale);
 
         $tools = ToolCatalog::localized($locale);
+        $alternateUrls = collect(ToolCatalog::locales())
+            ->map(fn (string $code) => [
+                'locale' => $code,
+                'url' => url(ToolCatalog::siteMapUrl($code)),
+            ])
+            ->values()
+            ->all();
         $localeLinks = collect(ToolCatalog::locales())
             ->map(fn (string $code) => [
                 'code' => $code,
@@ -102,6 +109,7 @@ class ToolPageController extends Controller
             'description' => trans('openpdf.sitemap.description', [], $locale),
             'homeUrl' => ToolCatalog::toolUrl($locale, ToolCatalog::defaultToolKey()),
             'canonicalUrl' => url(ToolCatalog::siteMapUrl($locale)),
+            'alternateUrls' => $alternateUrls,
             'localeLinks' => $localeLinks,
             'domain' => config('openpdf.domain'),
             'headerMenu' => ToolCatalog::headerMenu($locale),

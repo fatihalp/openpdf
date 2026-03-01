@@ -428,6 +428,15 @@ a {
   border: 0;
   box-shadow: none;
   padding-top: 1.7rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.op-converter-start h1,
+.op-converter-start .op-converter-sub,
+.op-converter-start .op-upload-area {
+  width: 100%;
 }
 
 .op-converter h1 {

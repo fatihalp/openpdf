@@ -118,14 +118,6 @@ Not:
 - Google config: `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`.
 - Admin Google setup help: `/admin/google-login-help`
 
-## Admin / Operasyon
-
-- Admin URL: `/admin`
-- Filament kaynaklari:
-  - Users
-  - ConversionTasks
-  - UploadedFiles
-
 Admin seed:
 
 ```bash
@@ -135,17 +127,6 @@ php artisan db:seed --class=AdminUserSeeder
 Varsayilan:
 - email: `a@a.com`
 - password: `236330`
-
-## Önemli Dosyalar
-
-- Tool config: `config/openpdf.php`
-- Tool catalog/URL mapping: `app/Support/ToolCatalog.php`
-- Public tool page: `resources/views/tool.blade.php`
-- Frontend app: `public/js/openpdf-app.js`
-- Frontend style: `public/css/openpdf.css`
-- Conversion API: `app/Http/Controllers/Api/ConversionController.php`
-- Queue job: `app/Jobs/ProcessConversionTaskJob.php`
-- Pipeline: `app/Services/Conversion/ConversionPipeline.php`
 
 ## Dil / SEO
 

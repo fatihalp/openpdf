@@ -1,9 +1,14 @@
+@php
+$locale = app()->getLocale();
+$homeUrl = \App\Support\ToolCatalog::isLocale($locale) ? \App\Support\ToolCatalog::homeUrl($locale) : '/';
+@endphp
+
 <footer
     class="bg-[#f5f5f7] border-t border-[#d2d2d7] text-[#6e6e73] text-[12px] font-[-apple-system,BlinkMacSystemFont,'SF_Pro_Text','Helvetica_Neue',Arial,sans-serif]">
     <div class="max-w-[980px] mx-auto px-4 sm:px-6 pb-6 pt-8">
         <div class="flex flex-col md:flex-row justify-between pb-6 border-b border-[#d2d2d7] gap-8">
             <div class="flex flex-col gap-3">
-                <a href="/"
+                <a href="{{ $homeUrl }}"
                     class="text-[#1d1d1f] font-semibold text-xl flex items-center gap-2 hover:opacity-80 transition-opacity">
                     <span style="letter-spacing: -0.02em;">OpenPDF</span>
                 </a>

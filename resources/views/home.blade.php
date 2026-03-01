@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $title }}</title>
     <meta name="description" content="{{ $description }}">
+    <link rel="canonical" href="{{ $canonicalUrl }}">
+    @foreach ($alternateUrls as $alternateUrl)
+    <link rel="alternate" hreflang="{{ $alternateUrl['locale'] }}" href="{{ $alternateUrl['url'] }}">
+    @endforeach
+    <link rel="alternate" hreflang="x-default" href="{{ $alternateUrls[0]['url'] ?? $canonicalUrl }}">
     @vite(['resources/css/app.css'])
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 </head>
@@ -17,7 +22,7 @@
 
     <main class="flex-grow">
         <!-- Hero Section -->
-        <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 text-center">
+        <section class="max-w-[980px] mx-auto px-4 sm:px-6 pt-8 pb-6 md:pt-10 md:pb-8 text-center">
             <h1 class="text-4xl md:text-5xl lg:text-5xl font-bold tracking-tight text-apple-text mb-4">
                 {{ __('openpdf.home.slogan_title', [], $locale) }}
             </h1>
@@ -27,7 +32,7 @@
         </section>
 
         <!-- Tools Grid -->
-        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+        <section class="max-w-[980px] mx-auto px-4 sm:px-6 pb-12 md:pb-14">
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
                 @php
                 $toolIcons = [
@@ -65,13 +70,6 @@
                 @endforeach
             </div>
 
-            <div class="mt-16 text-center">
-                <a class="inline-flex items-center justify-center gap-2 bg-apple-blue hover:bg-apple-blue-hover text-white px-6 py-3 rounded-full font-semibold transition-colors duration-200"
-                    href="https://github.com/sponsors/fatihalp">
-                    <i class="bi bi-heart-fill"></i>
-                    <span>Donate on GitHub Sponsors</span>
-                </a>
-            </div>
         </section>
     </main>
 

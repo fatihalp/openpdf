@@ -22,7 +22,7 @@ class HomeController extends Controller
             ->values()
             ->all();
 
-        return view('landing', [
+        return view('home', [
             'locale' => $locale,
             'domain' => config('openpdf.domain'),
             'title' => trans('openpdf.meta.title', [], $locale),

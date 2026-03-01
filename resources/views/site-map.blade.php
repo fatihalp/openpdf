@@ -57,18 +57,8 @@
         </div>
     </main>
 
+    @include('partials.footer')
     @include('partials.floating-controls', ['locale' => $locale, 'localeLinks' => $localeLinks])
-
-    <footer class="py-4 border-top">
-        <div class="container d-flex flex-wrap gap-3 align-items-center justify-content-between">
-            <div>{{ __('openpdf.footer.about', [], $locale) }}</div>
-            <div class="d-flex gap-3">
-                <a href="{{ $homeUrl }}">{{ __('openpdf.footer.home', [], $locale) }}</a>
-                <a href="{{ $canonicalUrl }}">{{ __('openpdf.footer.site_map', [], $locale) }}</a>
-                <a href="{{ $siteMapXmlUrl }}">{{ __('openpdf.footer.sitemap_xml', [], $locale) }}</a>
-            </div>
-        </div>
-    </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>

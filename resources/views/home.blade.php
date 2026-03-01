@@ -1,250 +1,82 @@
 <!doctype html>
-<html lang="{{ app()->getLocale() }}">
+<html lang="{{ $locale }}">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ trans('openpdf.meta.title') }}</title>
-    <meta name="description" content="{{ trans('openpdf.meta.description') }}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="{{ asset('css/openpdf.css') }}">
+    <title>{{ $title }}</title>
+    <meta name="description" content="{{ $description }}">
+    @vite(['resources/css/app.css'])
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 
-<body>
-    <div id="openpdf-app" class="app-shell" v-cloak>
-        <header class="site-header sticky-top">
-            <nav class="navbar navbar-expand-lg">
-                <div class="container">
-                    <a class="navbar-brand" href="/">
-                        <img src="{{ asset('img/openpdf-logo.svg') }}" alt="OpenPDF Logo"
-                            style="height: 32px; width: auto;">
-                    </a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
-                        aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="mainNav">
-                        <ul class="navbar-nav ms-auto me-3">
-                            <li class="nav-item"><a class="nav-link" href="#tools">@{{ config.i18n.nav.tools }}</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#workspace">@{{ config.i18n.nav.workspace
-                                    }}</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#policy">@{{ config.i18n.nav.limits }}</a>
-                            </li>
-                            <li class="nav-item"><a class="nav-link" href="#about">@{{ config.i18n.nav.about }}</a></li>
-                        </ul>
-                        <form method="post" action="{{ route('locale.switch') }}"
-                            class="d-flex align-items-center gap-2">
-                            @csrf
-                            <select name="locale" class="form-select form-select-sm" style="min-width: 130px;"
-                                onchange="this.form.submit()">
-                                @foreach ($i18n = trans('openpdf.locales') as $code => $label)
-                                <option value="{{ $code }}" @selected(app()->getLocale() === $code)>{{ $label }}
-                                </option>
-                                @endforeach
-                            </select>
-                            <span class="badge" :class="auth.logged_in ? 'text-bg-success' : 'text-bg-secondary'">@{{
-                                auth.logged_in ? auth.name : config.i18n.auth.visitor }}</span>
-                            <button v-if="auth.logged_in" type="button" class="btn btn-sm btn-outline-secondary"
-                                @click="logout">@{{ config.i18n.auth.logout }}</button>
-                        </form>
+<body
+    class="bg-apple-bg text-apple-text font-sans antialiased min-h-screen flex flex-col selection:bg-apple-blue selection:text-white">
+
+    @include('partials.public-header', ['headerMenu' => $headerMenu])
+
+    <main class="flex-grow">
+        <!-- Hero Section -->
+        <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 text-center">
+            <h1 class="text-4xl md:text-5xl lg:text-5xl font-bold tracking-tight text-apple-text mb-4">
+                {{ __('openpdf.home.slogan_title', [], $locale) }}
+            </h1>
+            <p class="text-lg md:text-xl text-apple-muted max-w-3xl mx-auto leading-relaxed">
+                {{ __('openpdf.home.slogan_subtitle', [], $locale) }}
+            </p>
+        </section>
+
+        <!-- Tools Grid -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
+                @php
+                $toolIcons = [
+                'pdf_to_word' => ['icon' => 'bi-file-word', 'color' => 'text-blue-500', 'bg' => 'bg-blue-50'],
+                'pdf_to_excel' => ['icon' => 'bi-file-excel', 'color' => 'text-green-600', 'bg' => 'bg-green-50'],
+                'pdf_to_jpg' => ['icon' => 'bi-file-image', 'color' => 'text-yellow-500', 'bg' => 'bg-yellow-50'],
+                'compress_pdf' => ['icon' => 'bi-arrows-angle-contract', 'color' => 'text-red-500', 'bg' =>
+                'bg-red-50'],
+                'merge_pdf' => ['icon' => 'bi-file-earmark-plus', 'color' => 'text-purple-500', 'bg' => 'bg-purple-50'],
+                'split_pdf' => ['icon' => 'bi-layout-split', 'color' => 'text-orange-500', 'bg' => 'bg-orange-50'],
+                'word_to_pdf' => ['icon' => 'bi-file-pdf', 'color' => 'text-blue-500', 'bg' => 'bg-blue-50'],
+                'excel_to_pdf' => ['icon' => 'bi-file-pdf', 'color' => 'text-green-600', 'bg' => 'bg-green-50'],
+                'jpg_to_pdf' => ['icon' => 'bi-file-pdf', 'color' => 'text-yellow-500', 'bg' => 'bg-yellow-50'],
+                ];
+                @endphp
+
+                @foreach ($tools as $tool)
+                @php
+                $iconData = $toolIcons[$tool['key']] ?? ['icon' => 'bi-file-earmark-text', 'color' => 'text-gray-500',
+                'bg' => 'bg-gray-50'];
+                @endphp
+                <a href="{{ $tool['url'] }}"
+                    class="group bg-white rounded-2xl p-6 border border-apple-border/40 hover:border-transparent hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 flex flex-col h-full">
+                    <div
+                        class="mb-5 {{ $iconData['bg'] }} w-14 h-14 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+                        <i class="bi {{ $iconData['icon'] }} {{ $iconData['color'] }} text-2xl"></i>
                     </div>
-                </div>
-            </nav>
-        </header>
+                    <h2
+                        class="text-xl font-bold text-apple-text mb-2 leading-tight group-hover:text-apple-blue transition-colors">
+                        {{ $tool['title'] }}</h2>
+                    <p class="text-sm text-apple-muted leading-relaxed line-clamp-3">
+                        {{ $tool['description'] }}
+                    </p>
+                </a>
+                @endforeach
+            </div>
 
-        <main>
-            <section class="hero-section">
-                <div class="container">
-                    <div class="hero-wrap">
-                        <div class="hero-content">
-                            <p class="kicker">@{{ config.i18n.hero.kicker }}</p>
-                            <h1>@{{ config.i18n.hero.title }}</h1>
-                            <p class="hero-text">@{{ config.i18n.hero.description }}</p>
-                            <div class="chip-row">
-                                <span class="chip">@{{ config.i18n.hero.badge_open }}</span>
-                                <span class="chip">@{{ config.i18n.hero.badge_no_membership }}</span>
-                                <span class="chip chip-accent">@{{ visitorLimitLabel }}</span>
-                            </div>
-                        </div>
-                        <div class="hero-auth card border-0 shadow-sm">
-                            <div class="card-body">
-                                <h2>@{{ config.i18n.auth.optional }}</h2>
-                                <p class="text-muted mb-3">@{{ config.i18n.auth.hint }}</p>
-                                <div id="googleButton"></div>
-                                <small class="text-muted" v-if="!config.googleClientId">Google Client ID tanimli
-                                    degil.</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="tools" class="section-space">
-                <div class="container">
-                    <div class="d-flex justify-content-between align-items-end mb-3">
-                        <div>
-                            <h2 class="section-title">@{{ config.i18n.nav.tools }}</h2>
-                            <p class="text-muted mb-0">@{{ config.i18n.meta.description }}</p>
-                        </div>
-                    </div>
-                    <div class="tool-grid">
-                        <button v-for="tool in tools" :key="tool.key" class="tool-card"
-                            :class="{ active: selectedTool && selectedTool.key === tool.key }" type="button"
-                            @click="selectTool(tool.key)">
-                            <h3>@{{ tool.title }}</h3>
-                            <p>@{{ tool.description }}</p>
-                            <small class="seo">@{{ tool.seo }}</small>
-                        </button>
-                    </div>
-                </div>
-            </section>
-
-            <section id="workspace" class="section-space">
-                <div class="container">
-                    <div class="workspace-grid">
-                        <div class="workspace-main card border-0 shadow-sm">
-                            <div class="card-body">
-                                <h3 class="mb-1">@{{ selectedTool ? selectedTool.title : '' }}</h3>
-                                <p class="text-muted">@{{ selectedTool ? selectedTool.description : '' }}</p>
-
-                                <label class="dropzone" @dragover.prevent="dropHover = true"
-                                    @dragleave.prevent="dropHover = false" @drop.prevent="onDrop"
-                                    :class="{ hover: dropHover }">
-                                    <input type="file" :accept="acceptAttribute" multiple @change="onInputChange"
-                                        hidden>
-                                    <p class="drop-title">@{{ config.i18n.workspace.drop_title }}</p>
-                                    <p class="drop-sub">@{{ config.i18n.workspace.drop_subtitle }}</p>
-                                </label>
-
-                                <div class="empty-box" v-if="files.length === 0">No files selected.</div>
-
-                                <div v-if="selectedTool && selectedTool.key === 'jpg_to_pdf'" class="file-grid">
-                                    <article v-for="(file, index) in files" :key="file.id" class="file-card"
-                                        draggable="true" @dragstart="startDrag(file.id)" @dragover.prevent
-                                        @drop.prevent="dropOn(file.id)">
-                                        <div class="actions">
-                                            <button type="button" class="btn btn-sm btn-danger rounded-circle"
-                                                @click="rotate(index)">↻</button>
-                                            <button type="button" class="btn btn-sm btn-light rounded-circle"
-                                                @click="remove(index)">✕</button>
-                                        </div>
-                                        <div class="preview">
-                                            <img :src="file.preview" :alt="file.name"
-                                                :style="{ transform: `rotate(${file.rotation}deg)` }">
-                                        </div>
-                                        <p class="name">@{{ file.name }}</p>
-                                    </article>
-                                </div>
-
-                                <div v-else class="list-group mt-3">
-                                    <div v-for="(file, index) in files" :key="file.id"
-                                        class="list-group-item d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <strong>@{{ file.name }}</strong>
-                                            <small class="d-block text-muted">@{{ formatBytes(file.size) }}</small>
-                                        </div>
-                                        <button type="button" class="btn btn-sm btn-outline-danger"
-                                            @click="remove(index)">Delete</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <aside class="workspace-side card border-0 shadow-sm">
-                            <div class="card-body">
-                                <h4 class="mb-3">@{{ config.i18n.workspace.settings }}</h4>
-
-                                <div v-if="selectedTool && selectedTool.key === 'jpg_to_pdf'">
-                                    <div class="mb-3">
-                                        <label class="form-label">Orientation</label>
-                                        <select class="form-select" v-model="options.orientation">
-                                            <option value="portrait">Portrait</option>
-                                            <option value="landscape">Landscape</option>
-                                        </select>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Page Size</label>
-                                        <select class="form-select" v-model="options.pageSize">
-                                            <option value="a4">A4</option>
-                                            <option value="letter">Letter</option>
-                                            <option value="a3">A3</option>
-                                            <option value="fit">Fit Image</option>
-                                        </select>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Margin</label>
-                                        <select class="form-select" v-model.number="options.margin">
-                                            <option :value="0">0</option>
-                                            <option :value="8">8</option>
-                                            <option :value="16">16</option>
-                                            <option :value="24">24</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-check mb-3">
-                                        <input class="form-check-input" type="checkbox" id="singleFile"
-                                            v-model="options.singleFile">
-                                        <label class="form-check-label" for="singleFile">Single output PDF</label>
-                                    </div>
-                                </div>
-
-                                <button type="button" class="btn btn-danger w-100" @click="convert"
-                                    :disabled="busy || files.length === 0">
-                                    @{{ config.i18n.workspace.convert }}
-                                </button>
-                                <p class="status mt-3 mb-0">@{{ statusMessage }}</p>
-                            </div>
-                        </aside>
-                    </div>
-                </div>
-            </section>
-
-            <section id="policy" class="section-space policy-section">
-                <div class="container">
-                    <h2 class="section-title">@{{ config.i18n.limits.title }}</h2>
-                    <div class="row g-3 mt-1">
-                        <div class="col-md-6">
-                            <div class="card border-0 shadow-sm h-100">
-                                <div class="card-body">
-                                    <h3>@{{ config.i18n.limits.visitor_title }}</h3>
-                                    <ul class="mb-0">
-                                        <li>@{{ visitorFilesLabel }}</li>
-                                        <li>@{{ visitorSizeLabel }}</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card border-danger shadow-sm h-100">
-                                <div class="card-body">
-                                    <h3>@{{ config.i18n.limits.google_title }}</h3>
-                                    <p class="mb-0">@{{ config.i18n.limits.google_unlimited }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
-        </main>
-    </div>
+            <div class="mt-16 text-center">
+                <a class="inline-flex items-center justify-center gap-2 bg-apple-blue hover:bg-apple-blue-hover text-white px-6 py-3 rounded-full font-semibold transition-colors duration-200"
+                    href="https://github.com/sponsors/fatihalp">
+                    <i class="bi bi-heart-fill"></i>
+                    <span>Donate on GitHub Sponsors</span>
+                </a>
+            </div>
+        </section>
+    </main>
 
     @include('partials.footer')
-    @include('partials.floating-controls', ['locale' => app()->getLocale(), 'localeLinks' => $localeLinks ?? []])
-
-    <script>window.OPENPDF_CONFIG = {!! $appConfigJson ?? '{}'!!};</script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue@3.5.13/dist/vue.global.prod.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios@1.7.9/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <script src="{{ asset('js/openpdf-app.js') }}"></script>
+    @include('partials.floating-controls', ['locale' => $locale, 'localeLinks' => $localeLinks])
 </body>
 
 </html>

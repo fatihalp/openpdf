@@ -26,8 +26,7 @@ class DeveloperPanelProvider extends PanelProvider
             ->id('developer')
             ->path('developer')
             ->login(Login::class)
-            ->brandLogo(asset('img/openpdf-logo.svg'))
-            ->brandLogoHeight('2rem')
+            ->brandName('OpenPDF')
             ->darkMode(false)
             ->colors([
                 'primary' => Color::Blue,

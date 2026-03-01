@@ -26,8 +26,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->brandLogo(asset('img/openpdf-logo.svg'))
-            ->brandLogoHeight('2rem')
+            ->brandName('OpenPDF')
             ->darkMode(false)
             ->colors([
                 'primary' => Color::Red,

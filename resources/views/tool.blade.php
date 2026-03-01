@@ -218,9 +218,10 @@
                 </div>
             </div>
         </main>
-
-        @include('partials.floating-controls', ['locale' => $locale, 'localeLinks' => $localeLinks])
     </div>
+
+    @include('partials.footer')
+    @include('partials.floating-controls', ['locale' => $locale, 'localeLinks' => $localeLinks])
 
     <script>window.OPENPDF_CONFIG = {!! $appConfigJson!!};</script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"

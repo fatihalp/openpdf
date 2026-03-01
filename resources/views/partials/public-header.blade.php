@@ -10,11 +10,11 @@ $allToolsUrl = $headerMenu['all_tools_url'] ?? '/';
         <div class="flex items-center justify-between h-20">
             <!-- Logo -->
             <a href="/"
-                class="flex flex-shrink-0 items-center justify-center gap-2 text-apple-text hover:opacity-80 transition-opacity">
-                <div class="bg-red-500 text-white p-2 rounded-xl flex items-center justify-center shadow-sm">
-                    <i class="bi bi-file-earmark-pdf-fill text-2xl"></i>
-                </div>
-                <span class="font-bold text-2xl tracking-tight">OpenPDF</span>
+                class="flex flex-shrink-0 items-center justify-center gap-2 hover:opacity-80 transition-opacity">
+                <span
+                    style="font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif; font-weight: 700; font-size: 1.35rem; letter-spacing: -0.02em; color: var(--op-text);">
+                    OpenPDF
+                </span>
             </a>
 
             <!-- Desktop Nav -->

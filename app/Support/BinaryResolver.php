@@ -3,6 +3,8 @@
 namespace App\Support;
 
 use Symfony\Component\Process\ExecutableFinder;
+use Symfony\Component\Process\Process;
+use Throwable;
 
 class BinaryResolver
 {
@@ -60,7 +62,7 @@ class BinaryResolver
     private function resolveCandidate(string $candidate): ?string
     {
         if (str_contains($candidate, '/')) {
-            return is_executable($candidate) ? $candidate : null;
+            return $candidate;
         }
 
         $finder = new ExecutableFinder;
@@ -72,12 +74,17 @@ class BinaryResolver
             return $found;
         }
 
-        $absolute = $this->searchAbsoluteDirectories($candidate);
-        if ($absolute !== null) {
-            return $absolute;
+        $fromShell = $this->resolveWithShell($candidate);
+        if ($fromShell !== null) {
+            return $fromShell;
         }
 
-        return $this->resolveWithShell($candidate);
+        $fromProcess = $this->resolveWithProcess($candidate);
+        if ($fromProcess !== null) {
+            return $fromProcess;
+        }
+
+        return $this->searchAbsoluteDirectories($candidate);
     }
 
     private function searchAbsoluteDirectories(string $binary): ?string
@@ -85,7 +92,7 @@ class BinaryResolver
         foreach (['/usr/bin', '/usr/local/bin', '/bin', '/usr/sbin', '/sbin'] as $directory) {
             $path = $directory.'/'.$binary;
 
-            if (is_executable($path)) {
+            if ($this->isPathExecutable($path)) {
                 return $path;
             }
         }
@@ -104,11 +111,69 @@ class BinaryResolver
         $output = shell_exec("PATH={$escapedPath} command -v {$escapedBinary} 2>/dev/null");
         $resolved = trim((string) $output);
 
-        if ($resolved === '' || ! is_executable($resolved)) {
+        if ($resolved === '') {
             return null;
         }
 
-        return $resolved;
+        return strtok($resolved, "\n") ?: null;
+    }
+
+    private function resolveWithProcess(string $binary): ?string
+    {
+        try {
+            $process = new Process(['/bin/sh', '-lc', 'command -v '.escapeshellarg($binary)]);
+            $process->setEnv($this->environment());
+            $process->setTimeout(5);
+            $process->run();
+
+            if (! $process->isSuccessful()) {
+                return null;
+            }
+
+            $resolved = trim($process->getOutput());
+            if ($resolved === '') {
+                return null;
+            }
+
+            return strtok($resolved, "\n") ?: null;
+        } catch (Throwable) {
+            return null;
+        }
+    }
+
+    private function isPathExecutable(string $path): bool
+    {
+        if (! $this->isPathAllowedByOpenBaseDir($path)) {
+            return false;
+        }
+
+        return @is_executable($path);
+    }
+
+    private function isPathAllowedByOpenBaseDir(string $path): bool
+    {
+        $openBaseDir = trim((string) ini_get('open_basedir'));
+        if ($openBaseDir === '') {
+            return true;
+        }
+
+        $normalized = rtrim(str_replace('\\', '/', $path), '/');
+        $allowed = array_filter(array_map(
+            static fn (string $value): string => rtrim(str_replace('\\', '/', trim($value)), '/'),
+            explode(PATH_SEPARATOR, $openBaseDir)
+        ));
+
+        foreach ($allowed as $base) {
+            if ($base === '') {
+                continue;
+            }
+
+            if ($normalized === $base || str_starts_with($normalized.'/', $base.'/')) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function shellCommandAvailable(): bool

@@ -10,6 +10,18 @@ return [
         'max_bytes' => (int) env('OPENPDF_VISITOR_MAX_MB', 100) * 1024 * 1024,
     ],
 
+    'binaries' => [
+        'gs' => env('OPENPDF_BINARY_GS', 'gs'),
+        'libreoffice' => env('OPENPDF_BINARY_LIBREOFFICE', 'libreoffice'),
+        'soffice' => env('OPENPDF_BINARY_SOFFICE', 'soffice'),
+        'pdfunite' => env('OPENPDF_BINARY_PDFUNITE', 'pdfunite'),
+        'pdftoppm' => env('OPENPDF_BINARY_PDFTOPPM', 'pdftoppm'),
+        'pdftotext' => env('OPENPDF_BINARY_PDFTOTEXT', 'pdftotext'),
+        'magick' => env('OPENPDF_BINARY_MAGICK', 'magick'),
+        'img2pdf' => env('OPENPDF_BINARY_IMG2PDF', 'img2pdf'),
+        'convert' => env('OPENPDF_BINARY_CONVERT', 'convert'),
+    ],
+
     'donations' => [
         [
             'key' => 'github',

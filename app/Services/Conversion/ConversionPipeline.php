@@ -3,15 +3,17 @@
 namespace App\Services\Conversion;
 
 use App\Models\ConversionTask;
+use App\Support\BinaryResolver;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
 use ZipArchive;
 
 class ConversionPipeline
 {
+    public function __construct(private BinaryResolver $binaryResolver) {}
+
     public function process(ConversionTask $task): array
     {
         $tool = $task->tool_key;
@@ -287,9 +289,10 @@ class ConversionPipeline
 
     private function run(array $command, ?string $context = null): Process
     {
-        $process = new Process($command);
+        $normalizedCommand = $this->normalizeCommand($command);
+        $process = new Process($normalizedCommand);
         $process->setTimeout(900);
-        $process->setEnv($this->commandEnvironment());
+        $process->setEnv($this->binaryResolver->environment());
 
         $process->run();
 
@@ -302,7 +305,7 @@ class ConversionPipeline
                 $message .= ' Details: '.$details;
             }
 
-            $message .= ' Command: '.$this->commandToString($command);
+            $message .= ' Command: '.$this->commandToString($normalizedCommand);
 
             throw new \RuntimeException($message);
         }
@@ -312,19 +315,21 @@ class ConversionPipeline
 
     private function assertBinary(string $binary, string $hint): void
     {
-        if (! $this->binaryExists($binary)) {
+        if (! $this->binaryResolver->exists($binary)) {
             throw new \RuntimeException($hint);
         }
     }
 
     private function officeBinary(): string
     {
-        if ($this->binaryExists('libreoffice')) {
-            return 'libreoffice';
+        $libreOffice = $this->binaryResolver->resolve('libreoffice');
+        if ($libreOffice !== null) {
+            return $libreOffice;
         }
 
-        if ($this->binaryExists('soffice')) {
-            return 'soffice';
+        $soffice = $this->binaryResolver->resolve('soffice');
+        if ($soffice !== null) {
+            return $soffice;
         }
 
         if (PHP_OS_FAMILY === 'Darwin' && is_executable('/Applications/LibreOffice.app/Contents/MacOS/soffice')) {
@@ -336,33 +341,24 @@ class ConversionPipeline
 
     private function binaryExists(string $binary): bool
     {
-        $finder = new ExecutableFinder;
-        $path = $this->commandEnvironment()['PATH'] ?? '';
-        $extraDirs = $path === '' ? [] : explode(':', $path);
-
-        return $finder->find($binary, null, $extraDirs) !== null;
+        return $this->binaryResolver->exists($binary);
     }
 
-    private function commandEnvironment(): array
+    private function normalizeCommand(array $command): array
     {
-        $env = $_ENV;
-        $configuredPath = (string) ($env['PATH'] ?? '');
-        $currentPath = (string) getenv('PATH');
+        if ($command === []) {
+            return $command;
+        }
 
-        $segments = [
-            '/opt/homebrew/bin',
-            '/usr/local/bin',
-            '/usr/bin',
-            '/bin',
-            '/usr/sbin',
-            '/sbin',
-            $configuredPath,
-            $currentPath,
-        ];
+        $binary = (string) $command[0];
+        if ($binary !== '' && ! str_contains($binary, '/')) {
+            $resolved = $this->binaryResolver->resolve($binary);
+            if ($resolved !== null) {
+                $command[0] = $resolved;
+            }
+        }
 
-        $env['PATH'] = implode(':', array_values(array_unique(array_filter($segments))));
-
-        return $env;
+        return $command;
     }
 
     private function cleanupPath(string $path): void

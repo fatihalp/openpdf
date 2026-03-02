@@ -3,9 +3,9 @@
 namespace App\Filament\Pages;
 
 use App\Services\Conversion\ConversionPipeline;
+use App\Support\BinaryResolver;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Storage;
-use Symfony\Component\Process\ExecutableFinder;
 
 class SystemCheck extends Page
 {
@@ -157,12 +157,12 @@ class SystemCheck extends Page
         ];
     }
 
-    public function getUbuntu24InstallGuide(): array
+    public function getUbuntuInstallGuide(): array
     {
         return [
             [
                 'title' => 'Install required packages',
-                'description' => 'Run as a sudo-enabled user on Ubuntu 24.04.',
+                'description' => 'Run as a sudo-enabled user on Ubuntu 22.04 or 24.04.',
                 'command' => implode("\n", [
                     'sudo apt update',
                     'sudo apt install -y software-properties-common',
@@ -197,33 +197,7 @@ class SystemCheck extends Page
 
     private function binaryExists(string $binary): bool
     {
-        $finder = new ExecutableFinder;
-        $path = $this->commandEnvironment()['PATH'] ?? '';
-        $extraDirs = $path === '' ? [] : explode(':', $path);
-
-        return $finder->find($binary, null, $extraDirs) !== null;
-    }
-
-    private function commandEnvironment(): array
-    {
-        $env = $_ENV;
-        $configuredPath = (string) ($env['PATH'] ?? '');
-        $currentPath = (string) getenv('PATH');
-
-        $segments = [
-            '/opt/homebrew/bin',
-            '/usr/local/bin',
-            '/usr/bin',
-            '/bin',
-            '/usr/sbin',
-            '/sbin',
-            $configuredPath,
-            $currentPath,
-        ];
-
-        $env['PATH'] = implode(':', array_values(array_unique(array_filter($segments))));
-
-        return $env;
+        return app(BinaryResolver::class)->exists($binary);
     }
 
     private function checkLibreOffice(): bool

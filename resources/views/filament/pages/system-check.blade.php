@@ -513,10 +513,10 @@
         </div>
         <div class="sc-card sc-guide">
             <div class="sc-card-head">
-                <h3>Ubuntu 24.04 Install Commands</h3>
+                <h3>Ubuntu 22.04 / 24.04 Install Commands</h3>
             </div>
             <div class="sc-guide-body">
-                @foreach($this->getUbuntu24InstallGuide() as $step)
+                @foreach($this->getUbuntuInstallGuide() as $step)
                 <div class="sc-guide-step" x-data="{ command: @js($step['command']) }">
                     <div class="sc-guide-step-head">
                         <div>

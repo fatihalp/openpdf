@@ -6,6 +6,7 @@ use App\Models\ConversionTask;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
 use ZipArchive;
 
@@ -288,10 +289,7 @@ class ConversionPipeline
     {
         $process = new Process($command);
         $process->setTimeout(900);
-
-        $env = $_ENV;
-        $env['PATH'] = '/opt/homebrew/bin:/usr/local/bin:'.getenv('PATH');
-        $process->setEnv($env);
+        $process->setEnv($this->commandEnvironment());
 
         $process->run();
 
@@ -338,15 +336,33 @@ class ConversionPipeline
 
     private function binaryExists(string $binary): bool
     {
-        $process = new Process(['which', $binary]);
+        $finder = new ExecutableFinder;
+        $path = $this->commandEnvironment()['PATH'] ?? '';
+        $extraDirs = $path === '' ? [] : explode(':', $path);
 
+        return $finder->find($binary, null, $extraDirs) !== null;
+    }
+
+    private function commandEnvironment(): array
+    {
         $env = $_ENV;
-        $env['PATH'] = '/opt/homebrew/bin:/usr/local/bin:'.getenv('PATH');
-        $process->setEnv($env);
+        $configuredPath = (string) ($env['PATH'] ?? '');
+        $currentPath = (string) getenv('PATH');
 
-        $process->run();
+        $segments = [
+            '/opt/homebrew/bin',
+            '/usr/local/bin',
+            '/usr/bin',
+            '/bin',
+            '/usr/sbin',
+            '/sbin',
+            $configuredPath,
+            $currentPath,
+        ];
 
-        return $process->isSuccessful();
+        $env['PATH'] = implode(':', array_values(array_unique(array_filter($segments))));
+
+        return $env;
     }
 
     private function cleanupPath(string $path): void

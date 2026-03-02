@@ -20,7 +20,7 @@
 </head>
 
 <body class="site-map-body">
-    @include('partials.public-header', ['headerMenu' => $headerMenu])
+    @include('partials.public-header', ['headerMenu' => $headerMenu, 'locale' => $locale, 'localeLinks' => $localeLinks])
 
     <main class="py-4">
         <div class="container">

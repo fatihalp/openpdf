@@ -137,3 +137,15 @@ Default credentials:
 - 20 locales are supported (`config/openpdf.php` -> `locales`).
 - Locale-specific SEO suffixes are configured in `config/openpdf.php` -> `route_slugs`.
 - Dynamic sitemap XML: `/sitemap.xml`.
+
+
+
+OPENPDF_BINARY_GS=/usr/bin/gs
+OPENPDF_BINARY_LIBREOFFICE=/usr/bin/libreoffice
+OPENPDF_BINARY_SOFFICE=/usr/bin/soffice
+OPENPDF_BINARY_PDFUNITE=/usr/bin/pdfunite
+OPENPDF_BINARY_PDFTOPPM=/usr/bin/pdftoppm
+OPENPDF_BINARY_PDFTOTEXT=/usr/bin/pdftotext
+OPENPDF_BINARY_IMG2PDF=/usr/bin/img2pdf
+OPENPDF_BINARY_MAGICK=/usr/bin/magick
+OPENPDF_BINARY_CONVERT=/usr/bin/convert

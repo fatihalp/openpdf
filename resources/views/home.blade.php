@@ -18,7 +18,7 @@
 <body
     class="bg-apple-bg text-apple-text font-sans antialiased min-h-screen flex flex-col selection:bg-apple-blue selection:text-white">
 
-    @include('partials.public-header', ['headerMenu' => $headerMenu])
+    @include('partials.public-header', ['headerMenu' => $headerMenu, 'locale' => $locale, 'localeLinks' => $localeLinks])
 
     <main class="flex-grow">
         <!-- Hero Section -->

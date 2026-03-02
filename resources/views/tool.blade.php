@@ -18,7 +18,7 @@
 
 <body class="openpdf-tool theme-dark">
     <div id="openpdf-app" v-cloak>
-        @include('partials.public-header', ['headerMenu' => $headerMenu, 'activeToolKey' => $activeToolKey])
+        @include('partials.public-header', ['headerMenu' => $headerMenu, 'activeToolKey' => $activeToolKey, 'locale' => $locale, 'localeLinks' => $localeLinks])
 
         <main class="op-converter-wrap">
             <input ref="fileInput" type="file" :accept="acceptAttribute" multiple @change="onInputChange" hidden>

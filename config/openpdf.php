@@ -4,6 +4,7 @@ return [
     'domain' => env('OPENPDF_DOMAIN', 'openpdf.com.tr'),
     'organization' => env('OPENPDF_ORGANIZATION', 'OpenPDF Association'),
     'free_forever' => (bool) env('OPENPDF_FREE_FOREVER', true),
+    'runtime_dir' => env('OPENPDF_RUNTIME_DIR', storage_path('app/private/runtime')),
 
     'visitor_limits' => [
         'max_files' => (int) env('OPENPDF_VISITOR_MAX_FILES', 100),

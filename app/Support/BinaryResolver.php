@@ -28,7 +28,7 @@ class BinaryResolver
 
     public function environment(): array
     {
-        $env = $_ENV;
+        $env = array_merge($_SERVER, $_ENV);
         $configuredPath = (string) ($env['PATH'] ?? '');
         $currentPath = (string) getenv('PATH');
 
@@ -45,7 +45,7 @@ class BinaryResolver
 
         $env['PATH'] = implode(':', array_values(array_unique(array_filter($segments))));
 
-        return $env;
+        return $this->withRuntimeDirectories($env);
     }
 
     private function configuredCandidate(string $binary): ?string
@@ -85,6 +85,122 @@ class BinaryResolver
         }
 
         return $this->searchAbsoluteDirectories($candidate);
+    }
+
+    private function withRuntimeDirectories(array $env): array
+    {
+        $runtimeRoot = $this->ensureDirectory($this->runtimeRoot());
+        if ($runtimeRoot === null) {
+            return $env;
+        }
+
+        $home = $this->preferredWritableDirectory(
+            $this->envValue($env, 'HOME'),
+            (string) getenv('HOME'),
+            $runtimeRoot.'/home'
+        );
+        if ($home !== null) {
+            $env['HOME'] = $home;
+        }
+
+        $cacheHome = $this->preferredWritableDirectory(
+            $this->envValue($env, 'XDG_CACHE_HOME'),
+            (string) getenv('XDG_CACHE_HOME'),
+            $runtimeRoot.'/.cache'
+        );
+        if ($cacheHome !== null) {
+            $env['XDG_CACHE_HOME'] = $cacheHome;
+        }
+
+        $configHome = $this->preferredWritableDirectory(
+            $this->envValue($env, 'XDG_CONFIG_HOME'),
+            (string) getenv('XDG_CONFIG_HOME'),
+            $runtimeRoot.'/.config'
+        );
+        if ($configHome !== null) {
+            $env['XDG_CONFIG_HOME'] = $configHome;
+        }
+
+        $dataHome = $this->preferredWritableDirectory(
+            $this->envValue($env, 'XDG_DATA_HOME'),
+            (string) getenv('XDG_DATA_HOME'),
+            $runtimeRoot.'/.local/share'
+        );
+        if ($dataHome !== null) {
+            $env['XDG_DATA_HOME'] = $dataHome;
+        }
+
+        $tempDir = $this->preferredWritableDirectory(
+            $this->envValue($env, 'TMPDIR'),
+            (string) getenv('TMPDIR'),
+            $runtimeRoot.'/tmp'
+        );
+        if ($tempDir !== null) {
+            $env['TMPDIR'] = $tempDir;
+            $env['TMP'] = $tempDir;
+            $env['TEMP'] = $tempDir;
+        }
+
+        return $env;
+    }
+
+    private function runtimeRoot(): string
+    {
+        $configured = config('openpdf.runtime_dir');
+        if (is_string($configured) && trim($configured) !== '') {
+            return rtrim(trim($configured), '/\\');
+        }
+
+        if (function_exists('storage_path')) {
+            return storage_path('app/private/runtime');
+        }
+
+        return rtrim(sys_get_temp_dir(), '/\\').'/openpdf-runtime';
+    }
+
+    private function preferredWritableDirectory(?string ...$candidates): ?string
+    {
+        foreach ($candidates as $candidate) {
+            if (! is_string($candidate) || trim($candidate) === '') {
+                continue;
+            }
+
+            $directory = $this->ensureDirectory($candidate);
+            if ($directory !== null) {
+                return $directory;
+            }
+        }
+
+        return null;
+    }
+
+    private function ensureDirectory(string $path): ?string
+    {
+        $normalizedPath = rtrim(trim($path), '/\\');
+        if ($normalizedPath === '') {
+            return null;
+        }
+
+        if (! $this->isPathAllowedByOpenBaseDir($normalizedPath)) {
+            return null;
+        }
+
+        if (! is_dir($normalizedPath) && ! @mkdir($normalizedPath, 0775, true) && ! is_dir($normalizedPath)) {
+            return null;
+        }
+
+        if (! is_writable($normalizedPath)) {
+            return null;
+        }
+
+        return $normalizedPath;
+    }
+
+    private function envValue(array $env, string $key): ?string
+    {
+        $value = $env[$key] ?? null;
+
+        return is_string($value) ? $value : null;
     }
 
     private function searchAbsoluteDirectories(string $binary): ?string

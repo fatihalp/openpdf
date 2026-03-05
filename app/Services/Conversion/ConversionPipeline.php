@@ -151,21 +151,23 @@ class ConversionPipeline
             throw new \RuntimeException('This tool works with a single file only.');
         }
 
-        $officeBinary = $this->officeBinary();
-        $command = [
-            $officeBinary,
-            '--headless',
-        ];
+        $inputPath = $inputPaths[0];
+        if (! is_file($inputPath) || ! is_readable($inputPath)) {
+            throw new \RuntimeException('LibreOffice input file is missing or unreadable: '.$inputPath);
+        }
 
-        if (strtolower(pathinfo($inputPaths[0], PATHINFO_EXTENSION)) === 'pdf' && $targetExt === 'docx') {
+        $officeBinary = $this->officeBinary();
+        $command = $this->officeCommand($officeBinary, $workDir);
+
+        if (strtolower(pathinfo($inputPath, PATHINFO_EXTENSION)) === 'pdf' && $targetExt === 'docx') {
             $command[] = '--infilter=writer_pdf_import';
         }
 
-        array_push($command, '--convert-to', $targetExt, '--outdir', $workDir, $inputPaths[0]);
+        array_push($command, '--convert-to', $targetExt, '--outdir', $workDir, $inputPath);
 
         $process = $this->run($command, 'LibreOffice conversion failed.');
 
-        $expected = pathinfo($inputPaths[0], PATHINFO_FILENAME).'.'.$targetExt;
+        $expected = pathinfo($inputPath, PATHINFO_FILENAME).'.'.$targetExt;
         $output = $workDir.'/'.$expected;
 
         if (! is_file($output)) {
@@ -179,7 +181,7 @@ class ConversionPipeline
             Log::warning('LibreOffice output missing after successful process', [
                 'binary' => $officeBinary,
                 'target_ext' => $targetExt,
-                'input' => basename($inputPaths[0]),
+                'input' => basename($inputPath),
                 'command' => $this->commandToString($command),
                 'stdout' => trim($process->getOutput()),
                 'stderr' => trim($process->getErrorOutput()),
@@ -234,16 +236,17 @@ class ConversionPipeline
         fclose($fp);
 
         $officeBinary = $this->officeBinary();
-        $this->run([
-            $officeBinary,
-            '--headless',
+        $command = [
+            ...$this->officeCommand($officeBinary, $workDir),
             '--infilter=CSV:44,34,76,1',
             '--convert-to',
             'xlsx',
             '--outdir',
             $workDir,
             $csvFile,
-        ], 'CSV to XLSX conversion failed.');
+        ];
+
+        $this->run($command, 'CSV to XLSX conversion failed.');
 
         if (! is_file($outputXlsx)) {
             throw new \RuntimeException('LibreOffice CSV to XLSX conversion failed. Output file was not created.');
@@ -337,6 +340,43 @@ class ConversionPipeline
         }
 
         throw new \RuntimeException('LibreOffice headless must be installed (libreoffice or soffice).');
+    }
+
+    private function officeCommand(string $officeBinary, string $workDir): array
+    {
+        $command = [
+            $officeBinary,
+            '--headless',
+        ];
+
+        $userInstallation = $this->libreOfficeUserInstallation($workDir);
+        if ($userInstallation !== null) {
+            $command[] = '-env:UserInstallation='.$userInstallation;
+        }
+
+        return $command;
+    }
+
+    private function libreOfficeUserInstallation(string $workDir): ?string
+    {
+        $profileDir = rtrim($workDir, '/').'/libreoffice-profile';
+
+        if (! is_dir($profileDir) && ! @mkdir($profileDir, 0775, true) && ! is_dir($profileDir)) {
+            return null;
+        }
+
+        if (! is_writable($profileDir)) {
+            return null;
+        }
+
+        $resolvedPath = realpath($profileDir) ?: $profileDir;
+        $normalizedPath = str_replace('\\', '/', $resolvedPath);
+
+        if (! str_starts_with($normalizedPath, '/')) {
+            $normalizedPath = '/'.$normalizedPath;
+        }
+
+        return 'file://'.$normalizedPath;
     }
 
     private function binaryExists(string $binary): bool

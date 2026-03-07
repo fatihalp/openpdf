@@ -97,6 +97,65 @@ return array_replace_recursive(require base_path('lang/en/openpdf.php'), [
         'home' => 'Ana sayfa',
         'site_map' => 'Site Haritası',
         'sitemap_xml' => 'Sitemap XML',
+        'privacy_policy' => 'Gizlilik Politikası',
+        'terms_of_service' => 'Kullanım Şartları',
+    ],
+    'legal' => [
+        'eyebrow' => 'Yasal',
+        'privacy' => [
+            'page_title' => 'Gizlilik Politikası',
+            'page_description' => 'OpenPDF\'nin hangi bilgileri işlediğini ve bu bilgileri nasıl kullandığını sade şekilde açıklar.',
+            'effective_date' => 'Yürürlük tarihi: 7 Mart 2026',
+            'sections' => [
+                [
+                    'title' => 'Hangi verileri topluyoruz',
+                    'body' => 'Dönüştürme için yüklediğiniz dosyaları, temel teknik istek verilerini ve hizmetin çalışması için gerekli oturum bilgilerini işleriz. Google ile giriş yaparsanız ad, e-posta adresi, Google kimliği ve profil görseli gibi Google tarafından iletilen hesap bilgilerini de saklarız.',
+                ],
+                [
+                    'title' => 'Bu verileri nasıl kullanıyoruz',
+                    'body' => 'Bu bilgileri belge dönüştürmelerini çalıştırmak, kötüye kullanımı önlemek, kullanıcı oturumlarını sürdürmek ve isteğe bağlı Google girişini desteklemek için kullanırız. Yüklediğiniz belgeleri reklam amacıyla kullanmayız.',
+                ],
+                [
+                    'title' => 'Dosyalar ve üretilen çıktılar',
+                    'body' => 'Yüklenen dosyalar ve üretilen çıktılar, OpenPDF tarafından kullanılan sunucu altyapısında işlenir ve saklanır. Bu hizmet sunucu tarafında gerçek dosyalarla çalıştığı için yalnızca işlemeye yetkili olduğunuz ve hizmete göndermekte sakınca görmediğiniz belgeleri yüklemelisiniz.',
+                ],
+                [
+                    'title' => 'Üçüncü taraflar',
+                    'body' => 'Google ile giriş yaparsanız Google yalnızca kimlik doğrulama amacıyla devreye girer. OpenPDF ayrıca hizmeti çalıştırmak için barındırma, depolama ve altyapı sağlayıcıları kullanabilir. Kişisel verilerinizi satmayız.',
+                ],
+                [
+                    'title' => 'Politika güncellemeleri',
+                    'body' => 'Bu gizlilik politikası hizmet değiştikçe güncellenebilir. Güncellemeden sonra OpenPDF\'yi kullanmaya devam etmeniz, güncellenmiş politikayı kabul ettiğiniz anlamına gelir.',
+                ],
+            ],
+        ],
+        'terms' => [
+            'page_title' => 'Kullanım Şartları',
+            'page_description' => 'OpenPDF ve herkese açık belge dönüştürme araçlarının kullanımına ilişkin basit şartlar.',
+            'effective_date' => 'Yürürlük tarihi: 7 Mart 2026',
+            'sections' => [
+                [
+                    'title' => 'Hizmet kapsamı',
+                    'body' => 'OpenPDF, çevrimiçi belge dönüştürme araçlarını en iyi gayret esasıyla sunar. Hizmet herhangi bir zamanda değiştirilebilir, sınırlandırılabilir veya geçici olarak kullanılamaz hale gelebilir.',
+                ],
+                [
+                    'title' => 'Sorumluluğunuz',
+                    'body' => 'Yüklediğiniz dosyalardan ve bunları işlemeye ilişkin yasal hakkınızın bulunmasından siz sorumlusunuz. OpenPDF\'yi hukuka aykırı, kötüye kullanıma açık veya zarar verici faaliyetler için kullanmayın.',
+                ],
+                [
+                    'title' => 'Garanti verilmez',
+                    'body' => 'Dönüştürmeler olduğu gibi sunulur. OpenPDF her dosyanın başarıyla dönüştürüleceğini, biçimin birebir korunacağını veya özel ticari, hukuki ya da teknik ihtiyaçlarınızı karşılayacağını garanti etmez.',
+                ],
+                [
+                    'title' => 'Erişilebilirlik ve kötüye kullanım',
+                    'body' => 'Hizmetin kararlılığını, güvenliğini veya diğer kullanıcıları tehdit eden kullanımları sınırlandırabilir, askıya alabilir veya engelleyebiliriz. Özellikler önceden bildirim yapılmadan değiştirilebilir veya kaldırılabilir.',
+                ],
+                [
+                    'title' => 'Sorumluluğun sınırı',
+                    'body' => 'Yasaların izin verdiği azami ölçüde OpenPDF; veri kaybı, başarısız dönüşüm veya kesinti dahil olmak üzere hizmet kullanımınızdan doğan dolaylı, arızi, özel veya sonuç niteliğindeki zararlardan sorumlu değildir.',
+                ],
+            ],
+        ],
     ],
     'seo_section' => [
         'title' => 'Ücretsiz Çevrimiçi PDF Dönüştürücü',

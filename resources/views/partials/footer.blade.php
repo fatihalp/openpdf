@@ -42,6 +42,12 @@ $homeUrl = \App\Support\ToolCatalog::isLocale($locale) ? \App\Support\ToolCatalo
                     <h3 class="text-[#1d1d1f] font-semibold mb-3">Support</h3>
                     <ul class="flex flex-col gap-2.5">
                         <li><a href="#" class="hover:text-[#1d1d1f] hover:underline transition-colors">Donate</a></li>
+                        <li><a href="{{ route('legal.privacy', ['locale' => $locale]) }}"
+                                class="hover:text-[#1d1d1f] hover:underline transition-colors">{{
+                                trans('openpdf.footer.privacy_policy') }}</a></li>
+                        <li><a href="{{ route('legal.terms', ['locale' => $locale]) }}"
+                                class="hover:text-[#1d1d1f] hover:underline transition-colors">{{
+                                trans('openpdf.footer.terms_of_service') }}</a></li>
                     </ul>
                 </div>
             </div>

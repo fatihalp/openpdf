@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ConversionController;
 use App\Http\Controllers\Web\HomeController;
+use App\Http\Controllers\Web\LegalPageController;
 use App\Http\Controllers\Web\LocaleController;
 use App\Http\Controllers\Web\SitemapXmlController;
 use App\Http\Controllers\Web\ToolPageController;
@@ -25,6 +26,14 @@ Route::get('/{locale}/{toolSlug}/{seoSlug}', [ToolPageController::class, 'show']
     ->where('locale', $localePattern)
     ->where('toolSlug', $toolPattern)
     ->name('tools.show');
+
+Route::get('/{locale}/privacy-policy', [LegalPageController::class, 'privacy'])
+    ->where('locale', $localePattern)
+    ->name('legal.privacy');
+
+Route::get('/{locale}/terms-of-service', [LegalPageController::class, 'terms'])
+    ->where('locale', $localePattern)
+    ->name('legal.terms');
 
 Route::get('/{locale}/{siteMapSlug}', [ToolPageController::class, 'siteMapPage'])
     ->where('locale', $localePattern)

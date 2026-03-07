@@ -54,38 +54,32 @@ $localeLinks = $localeLinks ?? [];
                     class="px-3 py-2.5 text-[13px] lg:text-sm font-bold tracking-wide rounded-lg hover:bg-black/5 transition-colors {{ $activeToolKey === null ? 'text-apple-blue' : 'text-apple-text' }}">{{ $allToolsLabel }}</a>
             </nav>
 
-            <div class="md:hidden flex items-center">
-                <button
-                    class="p-2 text-apple-muted hover:text-apple-text transition-colors rounded-lg hover:bg-black/5">
-                    <i class="bi bi-list text-3xl"></i>
-                </button>
-            </div>
-
             @if (count($localeLinks))
-            <div class="hidden md:flex items-center justify-end w-[160px]">
-                <div class="relative group">
-                    <button
-                        class="flex items-center gap-2 px-3 py-2.5 text-[13px] lg:text-sm font-bold tracking-wide text-apple-text rounded-lg hover:bg-black/5 transition-colors">
+            <div class="flex items-center justify-end w-[92px] sm:w-[108px] md:w-[188px] shrink-0">
+                <details class="relative">
+                    <summary
+                        class="op-locale-summary flex items-center gap-2 px-3 py-2.5 text-[13px] lg:text-sm font-bold tracking-wide text-apple-text rounded-lg hover:bg-black/5 transition-colors cursor-pointer">
                         <i class="bi bi-globe2 text-[14px]"></i>
                         <span>{{ strtoupper($locale) }}</span>
                         <i class="bi bi-chevron-down text-[10px] mt-0.5"></i>
-                    </button>
+                    </summary>
                     <div
-                        class="absolute right-0 mt-1 w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-apple-border/30 overflow-hidden z-50">
-                        <div class="py-2">
+                        class="absolute right-0 mt-2 w-[min(92vw,28rem)] sm:w-[28rem] max-h-[min(70vh,26rem)] overflow-y-auto rounded-2xl bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-apple-border/30 z-50">
+                        <div class="grid grid-cols-3 gap-px bg-apple-border/20 p-px">
                             @foreach ($localeLinks as $item)
                             <a href="{{ $item['url'] }}"
-                                class="flex items-center justify-between px-4 py-2.5 text-sm font-medium hover:bg-black/5 transition-colors {{ $item['code'] === $locale ? 'text-apple-blue' : 'text-apple-text' }}">
-                                <span>{{ $item['label'] }}</span>
-                                <span class="text-[11px] uppercase text-apple-muted">{{ $item['code'] }}</span>
+                                class="min-w-0 bg-white px-3 py-3 text-left text-xs sm:text-sm font-medium hover:bg-black/5 transition-colors {{ $item['code'] === $locale ? 'text-apple-blue' : 'text-apple-text' }}">
+                                <span class="block truncate">{{ $item['label'] }}</span>
+                                <span class="mt-1 block text-[10px] uppercase text-apple-muted">{{ $item['code']
+                                    }}</span>
                             </a>
                             @endforeach
                         </div>
                     </div>
-                </div>
+                </details>
             </div>
             @else
-            <div class="hidden md:block w-[140px]"></div>
+            <div class="w-[92px] sm:w-[108px] md:w-[188px] shrink-0"></div>
             @endif
         </div>
     </div>

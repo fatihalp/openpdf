@@ -335,6 +335,22 @@ a {
   }
 }
 
+.op-locale-summary {
+  list-style: none;
+}
+
+.op-locale-summary::-webkit-details-marker {
+  display: none;
+}
+
+.op-locale-summary .bi-chevron-down {
+  transition: transform 0.2s ease;
+}
+
+details[open] > .op-locale-summary .bi-chevron-down {
+  transform: rotate(180deg);
+}
+
 .op-converter-wrap {
   padding: 1.25rem 0 2rem;
   display: flex;

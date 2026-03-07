@@ -140,6 +140,65 @@ return [
         'home' => 'Home',
         'site_map' => 'Site Map',
         'sitemap_xml' => 'Sitemap XML',
+        'privacy_policy' => 'Privacy Policy',
+        'terms_of_service' => 'Terms of Service',
+    ],
+    'legal' => [
+        'eyebrow' => 'Legal',
+        'privacy' => [
+            'page_title' => 'Privacy Policy',
+            'page_description' => 'A simple explanation of what OpenPDF stores and how the service uses that information.',
+            'effective_date' => 'Effective date: March 7, 2026',
+            'sections' => [
+                [
+                    'title' => 'What we collect',
+                    'body' => 'We process the files you upload for conversion, basic technical request data, and session information required to keep the service working. If you sign in with Google, we also store the Google account data returned to us, such as your name, email address, Google ID, and avatar URL.',
+                ],
+                [
+                    'title' => 'How we use it',
+                    'body' => 'We use this information to run document conversions, protect the service from abuse, maintain user sessions, and support optional Google sign-in. We do not need your uploaded documents for advertising purposes.',
+                ],
+                [
+                    'title' => 'Files and generated outputs',
+                    'body' => 'Uploaded files and generated outputs are processed and stored on the service infrastructure used by OpenPDF. Because this service handles real files on the server side, you should only upload documents that you are authorized to process and comfortable sending to the service.',
+                ],
+                [
+                    'title' => 'Third parties',
+                    'body' => 'If you use Google sign-in, Google is involved only for authentication. OpenPDF may also rely on hosting, storage, and infrastructure providers to operate the service. We do not sell your personal data.',
+                ],
+                [
+                    'title' => 'Policy updates',
+                    'body' => 'This privacy policy may be updated when the service changes. Continued use of OpenPDF after an update means you accept the revised policy.',
+                ],
+            ],
+        ],
+        'terms' => [
+            'page_title' => 'Terms of Service',
+            'page_description' => 'Simple terms for using OpenPDF and its public document conversion tools.',
+            'effective_date' => 'Effective date: March 7, 2026',
+            'sections' => [
+                [
+                    'title' => 'Service scope',
+                    'body' => 'OpenPDF provides online document conversion tools on a best-effort basis. The service may change, be limited, or be unavailable at any time.',
+                ],
+                [
+                    'title' => 'Your responsibility',
+                    'body' => 'You are responsible for the files you upload and for making sure you have the legal right to process them. Do not use OpenPDF for unlawful, abusive, or harmful activity.',
+                ],
+                [
+                    'title' => 'No guarantee',
+                    'body' => 'Conversions are provided as-is. OpenPDF does not guarantee that every file will convert successfully, remain unchanged in formatting, or meet your specific business, legal, or technical requirements.',
+                ],
+                [
+                    'title' => 'Availability and abuse',
+                    'body' => 'We may limit, suspend, or block usage that threatens service stability, security, or other users. We may also change or remove features without prior notice.',
+                ],
+                [
+                    'title' => 'Liability',
+                    'body' => 'To the maximum extent allowed by law, OpenPDF is not liable for indirect, incidental, special, or consequential damages arising from your use of the service, including data loss, failed conversions, or downtime.',
+                ],
+            ],
+        ],
     ],
     'seo_section' => [
         'title' => 'Free Online PDF Converter',

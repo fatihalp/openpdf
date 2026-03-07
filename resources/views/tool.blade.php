@@ -110,24 +110,6 @@
                         feedbackMessage }}</p>
 
                     <div class="op-settings op-settings-side" v-if="isSplitTool">
-                        <div class="op-split-tabs">
-                            <button type="button" class="op-split-tab" :class="{ active: splitViewMode === 'range' }"
-                                @click="setSplitViewMode('range')">
-                                <i class="bi bi-braces"></i>
-                                <span>@{{ config.i18n.workspace.split_mode_range }}</span>
-                            </button>
-                            <button type="button" class="op-split-tab" :class="{ active: splitViewMode === 'pages' }"
-                                @click="setSplitViewMode('pages')">
-                                <i class="bi bi-grid-3x3-gap"></i>
-                                <span>@{{ config.i18n.workspace.split_mode_pages }}</span>
-                            </button>
-                            <button type="button" class="op-split-tab op-split-tab-disabled" disabled>
-                                <i class="bi bi-arrows-fullscreen"></i>
-                                <span>@{{ config.i18n.workspace.split_mode_size }}</span>
-                                <i class="bi bi-crown-fill op-split-crown"></i>
-                            </button>
-                        </div>
-
                         <div class="op-split-block">
                             <label class="form-label">@{{ config.i18n.workspace.split_extract_mode }}</label>
                             <div class="op-split-actions">

@@ -23,7 +23,6 @@
         resultButtonLabel: "",
         splitPdfBytes: null,
         splitPages: [],
-        splitViewMode: "pages",
         splitExtractMode: "selected",
         splitSelectionInput: "",
         splitMergeExtracted: false,
@@ -319,7 +318,6 @@
         }
 
         this.splitPages = pages;
-        this.splitViewMode = "pages";
         this.splitExtractMode = "selected";
         this.splitMergeExtracted = false;
         this.splitSelectionInput = formatPageSelection(this.selectedSplitPages);
@@ -327,7 +325,6 @@
       resetSplitState() {
         this.splitPdfBytes = null;
         this.splitPages = [];
-        this.splitViewMode = "pages";
         this.splitExtractMode = "selected";
         this.splitSelectionInput = "";
         this.splitMergeExtracted = false;
@@ -388,9 +385,6 @@
           this.sortable.destroy();
           this.sortable = null;
         }
-      },
-      setSplitViewMode(mode) {
-        this.splitViewMode = mode;
       },
       setSplitExtractMode(mode) {
         this.splitExtractMode = mode;
@@ -643,13 +637,17 @@
       },
       async convertViaBackend() {
         const serializedFiles = await Promise.all(
-          this.files.map(async (file) => ({
-            name: file.name,
-            size: file.size,
-            type: file.type,
-            rotation: file.rotation || 0,
-            data: await readFileAsDataUrl(file.file)
-          }))
+          this.files.map(async (file) => {
+            const preparedUpload = await this.prepareBackendUpload(file);
+
+            return {
+              name: file.name,
+              size: preparedUpload.size,
+              type: preparedUpload.type,
+              rotation: preparedUpload.rotation,
+              data: await readFileAsDataUrl(preparedUpload.blob)
+            };
+          })
         );
 
         const createResponse = await window.axios.post("/api/conversions", {
@@ -667,6 +665,30 @@
         }
 
         this.showResult(this.buildResultPayload(finalTask));
+      },
+      async prepareBackendUpload(file) {
+        const rotation = normalizeQuarterTurn(file.rotation || 0);
+        const shouldRotatePdf = this.selectedTool?.key === "merge_pdf"
+          && rotation !== 0
+          && ((file.name.split(".").pop() || "").toLowerCase() === "pdf");
+
+        if (!shouldRotatePdf) {
+          return {
+            blob: file.file,
+            size: file.file.size,
+            type: file.type,
+            rotation
+          };
+        }
+
+        const rotatedBlob = await rotatePdfBlob(file.file, rotation);
+
+        return {
+          blob: rotatedBlob,
+          size: rotatedBlob.size,
+          type: rotatedBlob.type || file.type || "application/pdf",
+          rotation: 0
+        };
       },
       buildResultPayload(finalTask) {
         if (this.selectedTool?.key === "merge_pdf") {
@@ -906,6 +928,10 @@
     return name.replace(/\.[^/.]+$/, "");
   }
 
+  function normalizeQuarterTurn(rotation) {
+    return ((Number(rotation || 0) % 360) + 360) % 360;
+  }
+
   function triggerDownload(url, fileName) {
     const anchor = document.createElement("a");
     anchor.href = url;
@@ -934,7 +960,7 @@
   }
 
   async function getRotatedSource(src, rotation) {
-    const angle = ((rotation % 360) + 360) % 360;
+    const angle = normalizeQuarterTurn(rotation);
     const image = await loadImage(src);
 
     if (angle === 0) {
@@ -956,5 +982,31 @@
       width: canvas.width,
       height: canvas.height
     };
+  }
+
+  async function rotatePdfBlob(blob, rotation) {
+    const angle = normalizeQuarterTurn(rotation);
+
+    if (angle === 0) {
+      return blob;
+    }
+
+    if (!(window.PDFLib && window.PDFLib.PDFDocument && window.PDFLib.degrees)) {
+      throw new Error("pdf-lib is not loaded.");
+    }
+
+    const inputBytes = await blob.arrayBuffer();
+    const pdfDoc = await window.PDFLib.PDFDocument.load(inputBytes);
+
+    pdfDoc.getPages().forEach((page) => {
+      const currentRotation = page.getRotation()?.angle || 0;
+      page.setRotation(window.PDFLib.degrees(normalizeQuarterTurn(currentRotation + angle)));
+    });
+
+    const outputBytes = await pdfDoc.save();
+
+    return new Blob([outputBytes], {
+      type: blob.type || "application/pdf"
+    });
   }
 })();

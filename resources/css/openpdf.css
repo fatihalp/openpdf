@@ -840,51 +840,6 @@ a {
   margin: 0.9rem 1.35rem 0;
 }
 
-.op-split-tabs {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.45rem;
-  margin-bottom: 1rem;
-}
-
-.op-split-tab {
-  position: relative;
-  min-height: 82px;
-  border-radius: 12px;
-  border: 1px solid #d8dde7;
-  background: #ffffff;
-  color: #5f6676;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.3rem;
-  font-weight: 600;
-  font-size: 0.94rem;
-}
-
-.op-split-tab.active {
-  color: #1d1d1f;
-  border-color: #9db5d0;
-  box-shadow: inset 0 0 0 1px #9db5d0;
-}
-
-.op-split-tab i {
-  font-size: 1.2rem;
-}
-
-.op-split-tab-disabled {
-  color: #a8aebb;
-}
-
-.op-split-crown {
-  position: absolute;
-  right: 7px;
-  top: 6px;
-  font-size: 0.78rem !important;
-  color: #f7b500;
-}
-
 .op-split-block {
   margin-bottom: 0.95rem;
 }
@@ -1192,19 +1147,6 @@ a {
 
   .op-page-grid {
     grid-template-columns: 1fr;
-  }
-
-  .op-split-tabs {
-    gap: 0.35rem;
-  }
-
-  .op-split-tab {
-    min-height: 68px;
-    font-size: 0.8rem;
-  }
-
-  .op-split-tab i {
-    font-size: 1rem;
   }
 
   .op-floating-add,

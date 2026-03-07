@@ -74,7 +74,6 @@
     </main>
 
     @include('partials.footer')
-    @include('partials.floating-controls', ['locale' => $locale, 'localeLinks' => $localeLinks])
 </body>
 
 </html>

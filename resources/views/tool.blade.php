@@ -195,10 +195,10 @@
 
                     <div class="op-work-cta">
                         <button type="button" class="btn op-primary-btn op-convert-btn op-convert-panel-btn"
-                            @click="convert" :disabled="busy || !canConvert">
-                            <span v-if="busy" class="spinner-border spinner-border-sm me-2"></span>
+                            @click="convert" :disabled="busy || !canConvert" :aria-busy="busy ? 'true' : 'false'">
+                            <span v-if="busy" class="op-button-spinner" aria-hidden="true"></span>
                             <span>@{{ panelConvertLabel }}</span>
-                            <i class="bi bi-arrow-right-circle"></i>
+                            <i v-if="!busy" class="bi bi-arrow-right-circle"></i>
                         </button>
                     </div>
                 </aside>

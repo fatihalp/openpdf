@@ -121,6 +121,10 @@
         return this.config.i18n?.workspace?.hint_sort || "To change the order, drag and drop the files as you want.";
       },
       panelConvertLabel() {
+        if (this.busy) {
+          return this.config.i18n?.status?.processing || "Conversion is processing...";
+        }
+
         if (this.isSplitTool) {
           return this.config.i18n?.workspace?.split_action || this.selectedTool?.title || "Split PDF";
         }

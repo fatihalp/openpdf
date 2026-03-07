@@ -5,6 +5,10 @@ return [
     'organization' => env('OPENPDF_ORGANIZATION', 'OpenPDF Association'),
     'free_forever' => (bool) env('OPENPDF_FREE_FOREVER', true),
     'runtime_dir' => env('OPENPDF_RUNTIME_DIR', storage_path('app/private/runtime')),
+    'admin_emails' => array_values(array_filter(array_map(
+        static fn (string $email): string => mb_strtolower(trim($email)),
+        explode(',', (string) env('OPENPDF_ADMIN_EMAILS', env('ADMIN_EMAIL', '')))
+    ))),
 
     'visitor_limits' => [
         'max_files' => (int) env('OPENPDF_VISITOR_MAX_FILES', 100),

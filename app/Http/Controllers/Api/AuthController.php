@@ -57,6 +57,7 @@ class AuthController extends Controller
         $sub = (string) ($payload['sub'] ?? '');
         $email = (string) ($payload['email'] ?? '');
         $name = (string) ($payload['name'] ?? $email);
+        $normalizedEmail = mb_strtolower($email);
 
         if ($sub === '' || $email === '') {
             return response()->json([
@@ -80,6 +81,7 @@ class AuthController extends Controller
         $user->google_id = $sub;
         $user->avatar_url = $payload['picture'] ?? null;
         $user->email_verified_at = now();
+        $user->is_admin = $user->is_admin || in_array($normalizedEmail, config('openpdf.admin_emails', []), true);
         $user->save();
 
         Auth::login($user, true);

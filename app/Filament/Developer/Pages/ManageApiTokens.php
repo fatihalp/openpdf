@@ -2,10 +2,10 @@
 
 namespace App\Filament\Developer\Pages;
 
+use Filament\Actions\Action;
+use Filament\Actions\DeleteAction;
 use Filament\Forms\Components\TextInput;
 use Filament\Pages\Page;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -57,11 +57,11 @@ class ManageApiTokens extends Page implements HasTable
                     }),
             ])
             ->actions([
-                            DeleteAction::make()
-                                ->label('Revoke')
-                                ->modalHeading('Revoke API Token')
-                                ->action(fn (PersonalAccessToken $record) => $record->delete()),
-                        ])
+                DeleteAction::make()
+                    ->label('Revoke')
+                    ->modalHeading('Revoke API Token')
+                    ->action(fn (PersonalAccessToken $record) => $record->delete()),
+            ])
             ->emptyStateHeading('No API Tokens')
             ->emptyStateDescription('Generate an API token to access the conversions API programmatically.');
     }

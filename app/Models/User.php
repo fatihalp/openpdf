@@ -42,7 +42,11 @@ class User extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->is_admin;
+        return $this->is_admin || in_array(
+            mb_strtolower((string) $this->email),
+            config('openpdf.admin_emails', []),
+            true
+        );
     }
 
     public function conversionTasks(): HasMany

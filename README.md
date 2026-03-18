@@ -1,6 +1,8 @@
 # OpenPDF (`openpdf.com.tr`)
 
+Motivation : All of PDF tools on market are asking for huge prices for small operations! 
 Laravel-based, multilingual, open-source PDF conversion platform.
+Fully open source version of ilovepdf, Adobe Acrobat PDF converter, smallpdf
 
 ## Stack
 
@@ -10,6 +12,10 @@ Laravel-based, multilingual, open-source PDF conversion platform.
 - Laravel Horizon (queue worker)
 - FilamentPHP v5 (admin panel)
 - Bootstrap 5 + Vue 3
+
+<img width="988" height="750" alt="Screenshot 2026-03-19 at 01 42 29" src="https://github.com/user-attachments/assets/a9f70724-d004-41f8-ad98-608540eb3538" />
+
+
 
 ## Quick Start
 
